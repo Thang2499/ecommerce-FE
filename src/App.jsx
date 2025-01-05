@@ -6,6 +6,7 @@ import Login from './login-signup/Login';
 import Signup from './login-signup/Signup';
 import HeaderForSignup from './headerComponent/HeaderForSignup';
 import AdminLogin from './admin/AdminLogin';
+import Footer from './footerComponent/Footer';
 function App() {
   const location = useLocation();
   return (
@@ -13,7 +14,7 @@ function App() {
   {location.pathname === "/signup" || location.pathname === "/login" ? (
     <HeaderForSignup />
   ) : location.pathname === "/admin-login" ? null : (
-    <Header />
+    <Header /> 
   )}
 
   <Routes>
@@ -21,6 +22,9 @@ function App() {
     <Route path="/login" element={<Login />} />
     <Route path="/admin-login" element={<AdminLogin />} />
   </Routes>
+  {!location.pathname.startsWith("/admin") &&
+    location.pathname !== "/signup" &&
+    location.pathname !== "/login" && <Footer />}
 </>
   )
 }
