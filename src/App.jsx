@@ -7,25 +7,54 @@ import Signup from './login-signup/Signup';
 import HeaderForSignup from './headerComponent/HeaderForSignup';
 import AdminLogin from './admin/AdminLogin';
 import Footer from './footerComponent/Footer';
+import AdminHome from './admin/AdminHome';
+import AdminCategory from './admin/AdminCategory';
+import Body from './bodyComponent/Body';
+import ShopManage from './admin/ShopManage';
+import UserManage from './admin/UserManage';
+import AdminManage from './admin/AdminManage';
+import AdminDashboard from './admin/AdminDashboard';
+import ShopRegister from './userComponent/ShopRegister';
+import ShopHome from './shopComponent/ShopHome';
+import ShopProfile from './shopComponent/ShopProfile';
 function App() {
   const location = useLocation();
   return (
-<>
-  {location.pathname === "/signup" || location.pathname === "/login" ? (
-    <HeaderForSignup />
-  ) : location.pathname === "/admin-login" ? null : (
-    <Header /> 
-  )}
+    <>
+      {/* Hiển thị HeaderForSignup hoặc Header dựa trên đường dẫn */}
+      {location.pathname === "/signup" || location.pathname === "/login" ? (
+        <HeaderForSignup />
+      ) : !location.pathname.startsWith("/admin") && !location.pathname.startsWith("/shopPage") ? (<Header />) : null}
 
-  <Routes>
-    <Route path="/signup" element={<Signup />} />
-    <Route path="/login" element={<Login />} />
-    <Route path="/admin-login" element={<AdminLogin />} />
-  </Routes>
-  {!location.pathname.startsWith("/admin") &&
-    location.pathname !== "/signup" &&
-    location.pathname !== "/login" && <Footer />}
-</>
+
+      <Routes>
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/admin-login" element={<AdminLogin />} />
+        {/* Admin Routes */}
+        <Route path="/admin" element={<AdminHome />}>
+          <Route path="category" element={<AdminCategory />} />
+          <Route path="dashboard" element={<AdminDashboard />} />
+          <Route path="shopManage" element={<ShopManage />} />
+          <Route path="userManage" element={<UserManage />} />
+          <Route path="adminManage" element={<AdminManage />} />
+        </Route>
+        {/* User Routes */}
+        <Route path="/shopRegister" element={<ShopRegister />} />
+        {/* Home Routes */}
+        <Route>
+          <Route path='' element={<Body />} />
+        </Route>
+ {/* Shop Routes */}
+        <Route path='/shopPage' element={<ShopHome />}>
+          <Route path='shopProfile/:id' element={<ShopProfile />} />
+        </Route>
+      </Routes>
+
+      {!location.pathname.startsWith("/admin") &&
+        location.pathname !== "/signup" &&
+        location.pathname !== "/login" && <Footer />}
+    </>
   )
 }
 

@@ -2,10 +2,12 @@ import React, { useState } from 'react'
 import axiosInstance from '../service/getRefreshToken';
 import { useDispatch, useSelector } from 'react-redux';
 import { login, setLoading } from '../service/stateManage/authSlice';
+import { useNavigate } from 'react-router';
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
+  const  navigate  = useNavigate();
   const auth = useSelector(state => state.auth); // đây là cách lấy state từ redux, không cần truyền props
   // console.log('auth',auth);
   const handleLogin = async (e) => {
@@ -26,7 +28,7 @@ const AdminLogin = () => {
       }))
       localStorage.setItem('accessToken', response.data.accessToken);
       localStorage.setItem('user', JSON.stringify(response.data.admin));
-      //   navigate('/');
+        navigate('/admin');
     } catch (err) {
       console.log(err);
     } finally {

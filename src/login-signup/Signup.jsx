@@ -1,16 +1,21 @@
 import React, { useState } from 'react'
 import signUp from '../public/login-signup.png'
+import axiosInstance from '../service/getRefreshToken';
 const Signup = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
     const [confirmPass, setconfirmPass] = useState('');
-    const handleSignUp = (e) => {
+    const handleSignUp = async (e) => {
         e.preventDefault();
         if(password !== confirmPass){
             console.log('mật khẩu không trùng khớp')
             return
           }
+          const response = await axiosInstance.post('/user/register', {
+            name, password, email
+          })
+          console.log(response);
     }
   return (
     <>
