@@ -28,7 +28,7 @@ const ShopHome = () => {
               <Link to='dashboard'>Trang chủ</Link>
               </li>
               <li className="py-2 px-4 hover:bg-gray-700">
-              <Link to='userManage'>Quản lý sản phẩm</Link>
+              <Link to='productManage'>Quản lý sản phẩm</Link>
               </li>
               <li className="py-2 px-4 hover:bg-gray-700">
                 <Link to={`shopProfile/${user.shopId._id}`}>Thông tin shop</Link>

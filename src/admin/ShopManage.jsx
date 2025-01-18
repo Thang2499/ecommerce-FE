@@ -21,7 +21,6 @@ const ShopManage = () => {
         try {
             const response = await axiosInstance.get('/admin/shop/list');
             setShopListReq(response.data.listShop);
-            console.log(response.data.listShop);
         } catch (err) {
             console.error('Lỗi:', err);
         }

@@ -17,6 +17,7 @@ import AdminDashboard from './admin/AdminDashboard';
 import ShopRegister from './userComponent/ShopRegister';
 import ShopHome from './shopComponent/ShopHome';
 import ShopProfile from './shopComponent/ShopProfile';
+import ProductManage from './shopComponent/ProductManage';
 function App() {
   const location = useLocation();
   return (
@@ -48,12 +49,15 @@ function App() {
  {/* Shop Routes */}
         <Route path='/shopPage' element={<ShopHome />}>
           <Route path='shopProfile/:id' element={<ShopProfile />} />
+          <Route path='productManage' element={<ProductManage />} />
         </Route>
       </Routes>
 
       {!location.pathname.startsWith("/admin") &&
         location.pathname !== "/signup" &&
-        location.pathname !== "/login" && <Footer />}
+        location.pathname !== "/login" &&
+        !location.pathname.startsWith("/shop") &&
+        <Footer />}
     </>
   )
 }
