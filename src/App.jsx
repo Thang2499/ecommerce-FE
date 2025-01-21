@@ -18,6 +18,8 @@ import ShopRegister from './userComponent/ShopRegister';
 import ShopHome from './shopComponent/ShopHome';
 import ShopProfile from './shopComponent/ShopProfile';
 import ProductManage from './shopComponent/ProductManage';
+import Wishlist from './userComponent/Wishlist';
+import { ShoppingCart } from './userComponent/ShoppingCart';
 function App() {
   const location = useLocation();
   return (
@@ -42,6 +44,8 @@ function App() {
         </Route>
         {/* User Routes */}
         <Route path="/shopRegister" element={<ShopRegister />} />
+        <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/cart" element={<ShoppingCart />} />
         {/* Home Routes */}
         <Route>
           <Route path='' element={<Body />} />

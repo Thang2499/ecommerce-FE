@@ -114,7 +114,7 @@ const Header = () => {
         </div>
         <div className='flex justify-around w-4/5 ml-32 mt-5'>
           <div>
-            <h1 className='text-4xl text-white cursor-pointer'>Shopee</h1>
+            <Link to='/'><h1 className='text-4xl text-white cursor-pointer'>Shopee</h1></Link>
           </div>
           <div className='w-7/12 relative'>
             <input className='w-full h-10 pl-2 border border-gray-300 focus:outline-none rounded ' type="text" placeholder='Tìm kiếm...' />
@@ -125,8 +125,8 @@ const Header = () => {
             />
           </div>
           <div className='flex justify-around w-1/12'>
-            <img src={wishlist} className="w-8 cursor-pointer pt-1" alt="" />
-            <img src={cart} className="w-8 cursor-pointer pt-1" alt="" />
+            <Link to='/wishlist'><img src={wishlist} className="w-8 cursor-pointer pt-1" alt="" /></Link>
+            <Link to='/cart'><img src={cart} className="w-8 cursor-pointer pt-1" alt="" /></Link>
           </div>
         </div>
       </div>

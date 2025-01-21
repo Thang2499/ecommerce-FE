@@ -4,6 +4,7 @@ import { Link, Outlet } from 'react-router'
 
 const AdminHome = () => {
   const {user} = useSelector(state => state.auth);
+
   return (
     <>
       <header className='flex items-center justify-between bg-blue-500 h-12 text-white'>
@@ -12,14 +13,14 @@ const AdminHome = () => {
         </div>
         <div className='flex justify-around w-2/12'>
           <Link to='/'><p className='cursor-pointer hover:text-orange-400 text-lg '>Xem website</p></Link>
-          <p className='cursor-pointer text-lg'>{user.name}</p>
+          <p className='cursor-pointer text-lg'>{user?.name}</p>
         </div>
       </header>
       <div className="flex h-screen">
         {/* Sidebar */}
         <aside className="w-2/12 bg-gray-800 text-white">
           <div className="flex flex-col items-center py-4 bg-gray-900">
-            <p className="mt-2 font-bold cursor-pointer ">{user.name}</p>
+            <p className="mt-2 font-bold cursor-pointer ">{user?.name}</p>
             <p className="text-green-400 text-sm">Online</p>
           </div>
           <nav className="mt-4">
@@ -37,11 +38,9 @@ const AdminHome = () => {
               <Link to='adminManage'>Quản lý Admin</Link>
               </li>
               <li className="py-2 px-4 hover:bg-gray-700">
-                <li className="py-1 hover:text-blue-400">
                   <Link to='category' className=" hover:bg-gray-700">
                     Danh mục
                   </Link>
-                </li>
               </li>
               <li className="py-2 px-4 hover:bg-gray-700">
                 <a href="#">Slogan</a>

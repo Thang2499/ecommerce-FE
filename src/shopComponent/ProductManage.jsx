@@ -11,12 +11,16 @@ import LoadingSpinner from './LoadingSpinner';
 const ProductManage = () => {
     // const [editorData, setEditorData] = useState('');
     const auth = useSelector((state) => state.auth);
-    console.log(auth.user.shopId._id);
     const [productLists, setProductLists] = useState([]);
     const [category, setCategory] = useState([]);
     const [loading, setLoading] = useState(false);
     const [addProduct, setAddProduct] = useState(false);
-    const [currentProduct, setCurrentProduct] = useState(null);
+    const [currentProduct, setCurrentProduct] = useState({
+        productName: '',
+        price: '',
+        description: '',
+        image: '',
+    });
     const [config, setConfig] = useState(false)
     const [formAddProduct, setFormAddProduct] = useState({
         name: '',
@@ -123,8 +127,23 @@ const ProductManage = () => {
                 [name]: value,
             }));
         }
+       
     };
-
+const handeChangeUpdate = (e) => {
+    const { name, value } = e.target;
+    if (name === 'price') {
+        let formattedValue = value.replace(/[^0-9]/g, '');
+        setCurrentProduct((prevProduct) => ({
+            ...prevProduct,
+            [name]: formattedValue ? formattedValue.replace(/\./g, '') : '',
+        }));
+    }else{
+    setCurrentProduct((prevProduct) => ({
+        ...prevProduct,
+        [name]: value,
+    }));
+}
+}
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
@@ -159,7 +178,46 @@ const ProductManage = () => {
             console.error('Error creating product', error);
         }
     };
-
+ const updateProduct = async () => {
+        setLoading(true);
+        const formData = new FormData();
+        formData.append('name', currentProduct.productName);
+        formData.append('price', currentProduct.price);
+        formData.append('description', currentProduct.description);
+        formData.append('category', currentProduct.category);
+        formData.append('image', currentProduct.image);
+        formData.append('shopId', auth.user.shopId._id);
+        try {
+            const response = await axiosInstance.put(`/shop/updateProduct/${currentProduct._id}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+            setLoading(false);
+            if (response.status === 201) {
+                toast.success('Cập nhật sản phẩm thành công');
+                getProducts();
+                setConfig(false);
+            } else {
+                toast.error('Cập nhật sản phẩm thất bại');
+            }
+        } catch (error) {
+            console.error('Error updating product', error);
+        }
+ }
+ const deleteProduct = async () => {
+    try {
+        const response = await axiosInstance.delete(`/shop/deleteProduct/${currentProduct._id}?shopId=${auth.user.shopId._id}`);
+        if (response.status === 200) {
+            toast.success('Xóa sản phẩm thành công');
+            getProducts();
+        } else {
+            toast.error('Xóa sản phẩm thất bại');
+        }
+    } catch (error) {
+        console.error('Error deleting product', error);
+    }
+ };
     const categoryOptions = category.flatMap((cat) => [
         { value: cat._id, label: cat.name },
         ...cat.children.map((child) => ({
@@ -293,49 +351,62 @@ const ProductManage = () => {
                 </div>
             </div>
 
-            {config && currentProduct && (
+            {config && (
                 <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50">
                     <div className="bg-white w-1/2 p-6 rounded-lg">
                         <div className="mb-4">
                             <label className="block font-medium text-gray-700">Tên sản phẩm</label>
                             <input
                                 type="text"
+                                name='productName'
+                                onChange={(e) => handeChangeUpdate(e)}
                                 className="w-full mt-1 p-2 border border-gray-300 rounded-md"
                                 value={currentProduct.productName}
-                                readOnly
+                                
                             />
                         </div>
                         <div className="mb-4">
                             <label className="block font-medium text-gray-700">Giá</label>
                             <input
                                 type="text"
+                                name='price'
+                                onChange={(e) => handeChangeUpdate(e)}
                                 className="w-full mt-1 p-2 border border-gray-300 rounded-md"
                                 value={formatPrice((currentProduct.price).toString())}
-                                readOnly
+                                
                             />
                         </div>
                         <div className="mb-4">
                             <label className="block font-medium text-gray-700">Mô tả</label>
                             <textarea
                                 type="text"
+                                name='description'
+                                onChange={(e) => handeChangeUpdate(e)}
                                 className="w-full mt-1 p-2 border border-gray-300 rounded-md"
                                 value={currentProduct.description}
-                                readOnly
+                                
                             />
                         </div>
                         <div className="mb-4">
                             <label className="block font-medium text-gray-700">Hình ảnh chính</label>
                             <img
                                 type="email"
+                                name='image'
+                                onChange={(e) => handeChangeUpdate(e)}
                                 className="w-1/6 cursor-pointer transition-transform duration-200 hover:scale-105"
                                 src={currentProduct.image}
-                                readOnly
+                               
                             />
                         </div>
 
                         <div className="flex gap-4">
-                            <button className="bg-blue-500 text-white py-2 px-4 rounded-md">Cập nhật</button>
-                            <button className="bg-red-500 text-white py-2 px-4 rounded-md">Xóa</button>
+                            <button
+                            onClick={updateProduct}
+                            className="bg-blue-500 text-white py-2 px-4 rounded-md">Cập nhật</button>
+
+                            <button
+                            onClick={deleteProduct}
+                            className="bg-red-500 text-white py-2 px-4 rounded-md">Xóa</button>
                             <button
                                 onClick={closePopup}
                                 className="bg-gray-300 text-gray-700 py-2 px-4 rounded-md"
