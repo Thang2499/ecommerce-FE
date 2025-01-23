@@ -10,7 +10,7 @@ const ShopManage = () => {
     const [currentUser, setCurrentUser] = useState(null);
     const getShopActive = async () => {
         try {
-            const response = await axiosInstance.get('/admin/shop/listActive');
+            const response = await axiosInstance.get('/admin/shop/list/active');
             setShopListActive(response.data.listShop);
         } catch (err) {
             console.error('Lỗi:', err);
@@ -19,7 +19,7 @@ const ShopManage = () => {
 
     const getShopRequest = async () => {
         try {
-            const response = await axiosInstance.get('/admin/shop/list');
+            const response = await axiosInstance.get('/admin/shop/list/requesting');
             setShopListReq(response.data.listShop);
         } catch (err) {
             console.error('Lỗi:', err);

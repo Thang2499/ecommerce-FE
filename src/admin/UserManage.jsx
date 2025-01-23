@@ -8,7 +8,7 @@ const UserManage = () => {
   const getListUser = async () =>{
     try {
       const response = await axiosInstance.get('/admin/user/list');
-      setListUser(response.data.listUser);
+      setListUser(response.data);
   } catch (err) {
       console.error('Lỗi:', err);
   }
