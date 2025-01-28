@@ -19,6 +19,7 @@ const ProductManage = () => {
         productName: '',
         price: '',
         description: '',
+        category: '',
         image: '',
     });
     const [config, setConfig] = useState(false)
@@ -98,7 +99,13 @@ const ProductManage = () => {
     const closePopup = () => {
         setAddProduct(false);
         setConfig(false);
-        setCurrentProduct(null);
+        setCurrentProduct({
+            productName: '',
+            price: '',
+            description: '',
+            category: '',
+            image: '',
+        });
     };
 
     const handleChange = (e) => {
@@ -232,7 +239,12 @@ const handeChangeUpdate = (e) => {
             category: selectedOption ? selectedOption.value : '',
         }));
     };
-
+    const handleCategoryChangeUpdate = (selectedOption) => {
+        setCurrentProduct((prevProduct) => ({
+            ...prevProduct,
+            category: selectedOption ? selectedOption.value : '',
+        }));
+    };
     const handleLimitChange = (e) => {
         const newLimit = parseInt(e.target.value);
         setQuery({ ...query, limit: newLimit, page: 1 });
@@ -311,8 +323,8 @@ const handeChangeUpdate = (e) => {
                         <button
                             key={index + 1}
                             onClick={() => handlePageChange(index + 1)}
-                            disabled={pagination.page === index + 1}
-                            className={`px-4 py-2 rounded-lg text-white bg-blue-500 hover:bg-blue-600 transition duration-300 ${pagination.page === index + 1 ? 'bg-blue-700 cursor-not-allowed' : ''}`}
+                            // disabled={pagination.page === index + 1}
+                            className={`px-4 py-2 rounded-lg text-white bg-blue-500 hover:bg-blue-600 transition duration-300 ${pagination.page === index + 1 ? 'bg-blue-700' : ''}`}
                         >
                             {index + 1}
                         </button>
@@ -374,6 +386,19 @@ const handeChangeUpdate = (e) => {
                                 className="w-full mt-1 p-2 border border-gray-300 rounded-md"
                                 value={formatPrice((currentProduct.price).toString())}
                                 
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block font-medium text-gray-700">Thể loại</label>
+                            <Select
+                                name="category"
+                                isClearable
+                                options={categoryOptions}
+                                value={categoryOptions.find(
+                                    (option) => option.value === currentProduct.category
+                                )}
+                                onChange={handleCategoryChangeUpdate}
+                                placeholder="Chọn thể loại"
                             />
                         </div>
                         <div className="mb-4">

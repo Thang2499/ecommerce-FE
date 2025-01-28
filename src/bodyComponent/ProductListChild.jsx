@@ -1,11 +1,29 @@
 import React from 'react'
 import { ToastContainer, toast, Bounce } from 'react-toastify';
+import axiosInstance from '../service/getRefreshToken';
+import { useSelector } from 'react-redux';
 const ProductListChild = ({ items }) => {
+  const auth = useSelector((state) => state.auth)
     const { productName, image, price, _id } = items;
     const formatPrice = (price) => {
         if (!price) return '';
         return price.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     };
+
+    const addToWishList = async (idProduct) => {
+      const wishList = [{ productId: idProduct.toString() }];
+      try {
+        const response = await axiosInstance.post(`/system/addWishList/${auth.user._id}`,{wishList:wishList})
+        if(response.status === 200) {
+          toast.success('Đã thêm sản phẩm vào danh sách yêu thích')
+        }else{
+          toast.error('Lỗi thêm sản phẩm vào danh sách yêu thích')
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
   return (
     <div className="relative w-11/12 group border border-gray-200 rounded-lg shadow-md  hover:shadow-2xl p-4 bg-white flex flex-col justify-between">
     {image ? (
@@ -26,11 +44,18 @@ const ProductListChild = ({ items }) => {
       <p className="text-gray-600 mt-1">Giá: {formatPrice(price.toString())}đ</p>
     </div>
     <button
+      onClick={() => addToWishList(_id)}
+      className="bg-black text-white w-full py-1 rounded-md opacity-0 group-hover:opacity-100 transition-all duration-700 ease-in-out hover:scale-110"
+    >
+      Add to wishlist
+    </button>
+    <button
     //   onClick={addToCart}
-      className="bg-black text-white w-full py-2 mt-4 rounded-md opacity-0 group-hover:opacity-100 transition-all duration-700 ease-in-out"
+      className="bg-black text-white w-full py-1 mt-1 rounded-md opacity-0 group-hover:opacity-100 transition-all duration-700 ease-in-out hover:scale-110"
     >
       Add to cart
     </button>
+    
   <ToastContainer
   position="top-right"
   autoClose={1000}

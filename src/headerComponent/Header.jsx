@@ -7,15 +7,28 @@ import search from '../public/headerImg/search.svg'
 import { Link } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '../service/stateManage/authSlice'
+import axiosInstance from '../service/getRefreshToken'
 const Header = () => {
   const authStore = useSelector(state => state.auth);
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
+  const [numberWishList,setNumberWishList] = useState(0)
   const dispatch = useDispatch()
 
   const toggleMenu = () => setMenuOpen((prev) => !prev);
 
+  const getCart = async () => {
+    try {
+        const response = await axiosInstance.post('/system/wishList', { id: authStore.user._id });
+        console.log(response)
+            setNumberWishList(response.data.length > 0 ? response.data.length : 0);
+    } catch (error) {
+        console.error('Lỗi khi lấy giỏ hàng:', error);
+    }
+}
+
   useEffect(() => {
+    getCart();
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setMenuOpen(false);
@@ -124,9 +137,10 @@ const Header = () => {
               className="absolute bg-orange-500 hover:bg-orange-600 top-1/2 right-3 -translate-y-1/2 w-16 h-8 pt-1 pb-1 rounded"
             />
           </div>
-          <div className='flex justify-around w-1/12'>
-            <Link to='/wishlist'><img src={wishlist} className="w-8 cursor-pointer pt-1" alt="" /></Link>
-            <Link to='/cart'><img src={cart} className="w-8 cursor-pointer pt-1" alt="" /></Link>
+          <div className='flex justify-around w-1/12 relative'>
+          <span className='left-7 bg-white rounded-full px-1.5 text-sm cursor-pointer absolute z-10'>{numberWishList}</span>
+            <Link to='/wishlist'><img src={wishlist} className="w-8 cursor-pointer hover:scale-110 pt-1" alt="" /></Link>
+            <Link to='/cart'><img src={cart} className="w-8 cursor-pointer hover:scale-110 pt-1" alt="" /></Link>
           </div>
         </div>
       </div>
