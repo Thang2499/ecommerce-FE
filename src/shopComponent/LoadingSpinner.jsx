@@ -3,7 +3,7 @@ import './LoadingSpinnerCss.css';
 const LoadingSpinner = () => {
     return (
         <div className="loading-overlay">
-            <ClipLoader size={50} color="#000" loading={true} />
+            <ClipLoader size={50} loading={true} />
             <p>Đang tải...</p>
         </div>
     );
