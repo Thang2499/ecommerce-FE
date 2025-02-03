@@ -23,7 +23,22 @@ const ProductListChild = ({ items }) => {
         console.log(error)
       }
     }
-
+  const addToCart = async (productId,price) => {
+    console.log(productId,price)
+    try {
+        const respone = await axiosInstance.post('/system/addToCart', {
+            id:auth.user._id,
+            productId:productId,
+            quantity:1,
+            unitPrice:price
+        })
+        if(respone.status === 200){
+           toast.success('Đã thêm vào giỏ hàng');
+        }           
+    } catch (error) {
+        console.log(error)
+    }
+}
   return (
     <div className="relative w-11/12 group border border-gray-200 rounded-lg shadow-md  hover:shadow-2xl p-4 bg-white flex flex-col justify-between">
     {image ? (
@@ -50,7 +65,7 @@ const ProductListChild = ({ items }) => {
       Add to wishlist
     </button>
     <button
-    //   onClick={addToCart}
+      onClick={() => addToCart(_id,price)}
       className="bg-black text-white w-full py-1 mt-1 rounded-md opacity-0 group-hover:opacity-100 transition-all duration-700 ease-in-out hover:scale-110"
     >
       Add to cart

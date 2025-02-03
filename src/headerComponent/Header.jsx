@@ -4,7 +4,7 @@ import question from '../public/headerImg/question-mark.svg'
 import cart from '../public/headerImg/cart.svg'
 import wishlist from '../public/headerImg/wishlist.svg'
 import search from '../public/headerImg/search.svg'
-import { Link } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '../service/stateManage/authSlice'
 import axiosInstance from '../service/getRefreshToken'
@@ -13,8 +13,8 @@ const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const [numberWishList,setNumberWishList] = useState(0)
-  const dispatch = useDispatch()
-
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const toggleMenu = () => setMenuOpen((prev) => !prev);
 
   const getCart = async () => {

@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import axiosInstance from '../service/getRefreshToken';
 import trash from '../public/trash.svg'
-import { ToastContainer, toast, Bounce } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
+import { useNavigate } from 'react-router';
 const Wishlist = () => {
+    const navigate = useNavigate();1
     const { user } = useSelector(state => state.auth);
     const [wishList, setWishList] = useState([]);
     const getCart = async () => {
@@ -53,6 +55,11 @@ const Wishlist = () => {
         return price.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     };
 
+    const handleProductDetail = (idProduct) =>{
+        navigate(`/productDetail/${idProduct}`)
+  
+   }
+
     useEffect(() => {
         getCart();
     }, []);
@@ -71,7 +78,9 @@ const Wishlist = () => {
                         </div>
     
                         <div className="text-center mb-2">
-                            <p className="text-lg hover:underline cursor-pointer font-semibold">{item.productId.productName}</p>
+                            <p 
+                            onClick={()=>handleProductDetail(item.productId._id)}
+                            className="text-lg hover:underline cursor-pointer font-semibold">{item.productId.productName}</p>
                             <p className="text-xl font-semibold text-red-600">{formatPrice(item.productId.price.toString())}đ</p>
                         </div>
     

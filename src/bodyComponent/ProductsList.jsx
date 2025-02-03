@@ -41,6 +41,7 @@ const ProductsList = () => {
   useEffect(() => {
     getProductList();
   }, [])
+
   return (
     <>
       <div className='mt-12'>

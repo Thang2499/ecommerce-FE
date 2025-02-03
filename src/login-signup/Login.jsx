@@ -19,7 +19,6 @@ const Login = () => {
           email, password
         });
         if (response && response.status === 200) {
-          console.log(response);
         } else {
           throw new Error('Unexpected response');
         }

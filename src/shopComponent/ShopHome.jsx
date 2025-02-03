@@ -43,7 +43,7 @@ const ShopHome = () => {
                 <a href="#">Slogan</a>
               </li>
               <li className="py-2 px-4 hover:bg-gray-700">
-                <a href="#">Đơn hàng</a>
+              <Link to='manageOrder' className=" hover:bg-gray-700">Đơn hàng</Link>
               </li>
               <li className="py-2 px-4 hover:bg-gray-700">
                 <a href="#">Nhận xét khách hàng</a>

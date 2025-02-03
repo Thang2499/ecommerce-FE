@@ -20,6 +20,9 @@ import ShopProfile from './shopComponent/ShopProfile';
 import ProductManage from './shopComponent/ProductManage';
 import Wishlist from './userComponent/Wishlist';
 import { ShoppingCart } from './userComponent/ShoppingCart';
+import Order from './userComponent/Order';
+import ManageOrder from './shopComponent/ManageOrder';
+import ProductDetail from './shopComponent/ProductDetail';
 function App() {
   const location = useLocation();
   return (
@@ -46,14 +49,18 @@ function App() {
         <Route path="/shopRegister" element={<ShopRegister />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/cart" element={<ShoppingCart />} />
+        <Route path="/order" element={<Order />} />
+        <Route path='/productDetail/:id' element={<ProductDetail />} />
         {/* Home Routes */}
         <Route>
           <Route path='' element={<Body />} />
         </Route>
- {/* Shop Routes */}
+        {/* Shop Routes */}
         <Route path='/shopPage' element={<ShopHome />}>
           <Route path='shopProfile/:id' element={<ShopProfile />} />
           <Route path='productManage' element={<ProductManage />} />
+          <Route path='manageOrder' element={<ManageOrder />} />
+          
         </Route>
       </Routes>
 
