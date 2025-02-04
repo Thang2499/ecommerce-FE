@@ -23,6 +23,7 @@ import { ShoppingCart } from './userComponent/ShoppingCart';
 import Order from './userComponent/Order';
 import ManageOrder from './shopComponent/ManageOrder';
 import ProductDetail from './shopComponent/ProductDetail';
+import ErrorPage from './service/ErrorPage';
 function App() {
   const location = useLocation();
   return (
@@ -37,6 +38,8 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
         <Route path="/admin-login" element={<AdminLogin />} />
+        <Route path='/error' element={<ErrorPage />} />
+        <Route path="*" element={<ErrorPage />} />
         {/* Admin Routes */}
         <Route path="/admin" element={<AdminHome />}>
           <Route path="category" element={<AdminCategory />} />

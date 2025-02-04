@@ -18,10 +18,16 @@ const Header = () => {
   const toggleMenu = () => setMenuOpen((prev) => !prev);
 
   const getCart = async () => {
+    if (!authStore?.user?._id) {
+      // console.warn("Người dùng chưa đăng nhập hoặc không có ID");
+      setNumberWishList(0);
+      return;
+  }
     try {
-        const response = await axiosInstance.post('/system/wishList', { id: authStore.user._id });
-        console.log(response)
-            setNumberWishList(response.data.length > 0 ? response.data.length : 0);
+        const response = await axiosInstance.post('/system/wishList', { id: authStore.user._id});
+        if(response.status === 200){
+          setNumberWishList(response.data.length > 0 ? response.data.length : 0);
+        }
     } catch (error) {
         console.error('Lỗi khi lấy giỏ hàng:', error);
     }
@@ -40,7 +46,8 @@ const Header = () => {
 
   const handleLogout = () => {
     dispatch(logout());
-    navigate('/')
+    navigate('/');
+    location.reload();
   };
 
   return (

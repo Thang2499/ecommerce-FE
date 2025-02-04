@@ -2,9 +2,11 @@ import React from 'react'
 import { ToastContainer, toast, Bounce } from 'react-toastify';
 import axiosInstance from '../service/getRefreshToken';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
 const ProductListChild = ({ items }) => {
   const auth = useSelector((state) => state.auth)
     const { productName, image, price, _id } = items;
+    const navigate = useNavigate();
     const formatPrice = (price) => {
         if (!price) return '';
         return price.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
@@ -14,17 +16,17 @@ const ProductListChild = ({ items }) => {
       const wishList = [{ productId: idProduct.toString() }];
       try {
         const response = await axiosInstance.post(`/system/addWishList/${auth.user._id}`,{wishList:wishList})
-        if(response.status === 200) {
-          toast.success('Đã thêm sản phẩm vào danh sách yêu thích')
+        if(response.status === 200  && response.data.message === 'Sản phẩm đã có trong wishlist') {
+          toast.info('Sản phẩm đã có trong danh sách yêu thích')
         }else{
-          toast.error('Lỗi thêm sản phẩm vào danh sách yêu thích')
+          toast.success('Đã thêm sản phẩm vào danh sách yêu thích')
         }
       } catch (error) {
+        toast.info('Vui lòng đăng nhập để mua hàng')
         console.log(error)
       }
     }
   const addToCart = async (productId,price) => {
-    console.log(productId,price)
     try {
         const respone = await axiosInstance.post('/system/addToCart', {
             id:auth.user._id,
@@ -36,8 +38,12 @@ const ProductListChild = ({ items }) => {
            toast.success('Đã thêm vào giỏ hàng');
         }           
     } catch (error) {
+      toast.info('Vui lòng đăng nhập để mua hàng')
         console.log(error)
     }
+};
+const handleProductDetail = (idProduct) =>{
+  navigate(`/productDetail/${idProduct}`)
 }
   return (
     <div className="relative w-11/12 group border border-gray-200 rounded-lg shadow-md  hover:shadow-2xl p-4 bg-white flex flex-col justify-between">
@@ -54,7 +60,7 @@ const ProductListChild = ({ items }) => {
     )}
     <div className="text-center mt-4">
      <p 
-    //  onClick={() => handleProductDetail(_id)}
+     onClick={() => handleProductDetail(_id)}
       className="font-semibold cursor-pointer hover:text-blue-600">{productName}</p>
       <p className="text-gray-600 mt-1">Giá: {formatPrice(price.toString())}đ</p>
     </div>

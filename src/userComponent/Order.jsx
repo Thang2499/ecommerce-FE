@@ -1,4 +1,3 @@
-import axios from 'axios';
 import React from 'react'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
@@ -32,6 +31,11 @@ const Order = () => {
   const [selectedProvinceName, setSelectedProvinceName] = useState('');
   const [selectedDistrictName, setSelectedDistrictName] = useState('');
   const [selectedWardName, setSelectedWardName] = useState('');
+
+  const [provinceError, setProvinceError] = useState("");
+  const [districtError, setDistrictError] = useState("");
+  const [wardError, setWardError] = useState("");
+
   const address = [formData.streetAddress, selectedWardName, selectedDistrictName, selectedProvinceName].toString();
 
   const [selectedPayment, setSelectedPayment] = useState('');
@@ -40,7 +44,7 @@ const Order = () => {
   };
   const total = order.map(item => item.totalPrice);
   const totalPrice = total.reduce((acc, curr) => acc + curr, 0);
- const totalPriceOrder = parseFloat(fee) +parseFloat(totalPrice);
+ const totalPriceOrder = parseFloat(fee) + parseFloat(totalPrice);
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -86,6 +90,7 @@ const Order = () => {
     setSelectedProvince(provinceId);
     setSelectedDistrict('');
     setWards([]);
+    setProvinceError(""); 
     const selectedProvince = provinces.find(
       (province) => province.ProvinceID === Number(provinceId)
     );
@@ -100,6 +105,7 @@ const Order = () => {
     const districtId = e.target.value;
     setSelectedDistrict(districtId);
     setSelectedWard('');
+    setDistrictError("");
     const selectedDistrict = districts.find(
       (district) => district.DistrictID === Number(districtId)
     );
@@ -111,6 +117,7 @@ const Order = () => {
 
   const handleWardChange = (e) => {
     setSelectedWard(e.target.value);
+    setWardError("");
     const selectedWards = wards.find(
       (ward) => ward.WardCode === selectedWard
     );
@@ -155,24 +162,34 @@ const Order = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     let formErrors = {};
-    if (!formData.firstName) formErrors.firstName = 'First Name is required';
-    if (!formData.streetAddress) formErrors.streetAddress = 'Street Address is required';
-    if (!formData.phoneNumber) formErrors.phoneNumber = 'Phone Number is required';
-    if (!formData.email) formErrors.email = 'Email Address is required';
+    if (!formData.firstName) return formErrors.firstName = 'First Name is required'
+    if (!formData.streetAddress) return formErrors.streetAddress = 'Street Address is required';
+    if (!formData.phoneNumber) return formErrors.phoneNumber = 'Phone Number is required';
+    if (!formData.email) return formErrors.email = 'Email Address is required';
+
+    if (!selectedProvince) {
+      return setProvinceError("Vui lòng chọn Tỉnh/Thành phố");
+    }
+    if (!selectedDistrict) {
+      return  setDistrictError("Vui lòng chọn Quận/Huyện");
+    }
+    if (!selectedWard) {
+      return setWardError("Vui lòng chọn Phường/Xã");
+    }
 
     if (order.length === 0) {
       toast.error('Giỏ hàng của bạn đang trống. Vui lòng thêm sản phẩm trước khi đặt hàng.');
       return;
     }
     if (Object.keys(formErrors).length === 0) {
-      setFormData({
+     return setFormData({
         firstName: '',
         streetAddress: '',
         phoneNumber: '',
         email: ''
       });
     } else {
-      setErrors(formErrors);
+     setErrors(formErrors);
     }
     if(!selectedPayment){
       toast.error('Vui lòng chọn phương thức thanh toán')
@@ -192,12 +209,11 @@ const Order = () => {
       console.error('Error create Order:', error);
       throw error;
     }
-    // await axiosInstance.post('/send-email', {
+    // await axiosInstance.post('/API/send-email', {
     //   email: formData.email,
     //   orderDetails: order,
     // },
     // {credentials: 'include'});
-
     // toast.success('Đơn hàng của bạn đã được xử lý và email xác nhận đã được gửi!');
     //---------------------------------------------
     if(selectedPayment === 'Momo'){
@@ -246,6 +262,7 @@ const Order = () => {
                   </option>
                 ))}
               </select>
+              {provinceError && <p className="text-red-500 text-sm">{provinceError}</p>}
             </div>
 
             {/* Quận/Huyện */}
@@ -265,6 +282,7 @@ const Order = () => {
                   </option>
                 ))}
               </select>
+              {districtError && <p className="text-red-500 text-sm">{districtError}</p>}
             </div>
 
             {/* Phường/Xã */}
@@ -284,6 +302,7 @@ const Order = () => {
                   </option>
                 ))}
               </select>
+              {wardError && <p className="text-red-500 text-sm">{wardError}</p>}
             </div>
 
             {/* Street Address */}

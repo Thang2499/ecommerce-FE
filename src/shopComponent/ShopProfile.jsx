@@ -14,7 +14,11 @@ const ShopProfileEdit = () => {
 
   const profileShop = async () => {
     const response = await axiosInstance.post('/shop/shopProfile', { id });
-    setShopProfile(response.data);
+    if(response.status === 200){
+      setShopProfile(response.data);
+    }else{
+      alert('a')
+    }
   };
   useEffect(() => {
     profileShop();

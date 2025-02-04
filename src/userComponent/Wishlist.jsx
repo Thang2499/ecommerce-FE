@@ -5,10 +5,15 @@ import trash from '../public/trash.svg'
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
 const Wishlist = () => {
-    const navigate = useNavigate();1
+    const navigate = useNavigate();
     const { user } = useSelector(state => state.auth);
     const [wishList, setWishList] = useState([]);
     const getCart = async () => {
+        if (!user?._id) {
+            // console.warn("Người dùng chưa đăng nhập hoặc không có ID");
+            setWishList(0); // Đảm bảo UI không bị lỗi
+            return;
+        }
         try {
             const response = await axiosInstance.post('/system/wishList', { id: user._id });
             setWishList(response.data);
@@ -57,7 +62,6 @@ const Wishlist = () => {
 
     const handleProductDetail = (idProduct) =>{
         navigate(`/productDetail/${idProduct}`)
-  
    }
 
     useEffect(() => {

@@ -1,20 +1,24 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux';
 import axiosInstance from '../service/getRefreshToken';
+import { useLocation, useNavigate } from 'react-router';
 
 const ManageOrder = () => {
     const [data, setData] = useState([])
     const [activeTab, setActiveTab] = useState('Pending');
     const [updatedStatus, setUpdatedStatus] = useState({});
+    const navigate = useNavigate();
+    const location = useLocation();
     const getManageOrder = async () => {
         try {
             const response = await axiosInstance.get('/shop/manageOrder', {});
             if (response.status !== 200) {
                 console.error('Error details:', response);
-                throw new Error('đăng nhập thất bại');
             }
             setData(response.data);
         } catch (err) {
+            if(err.status === 404){
+                return   navigate('/error', { state: { from: location.pathname } });
+            }
             console.error(err);
         }
     }
@@ -43,10 +47,9 @@ const ManageOrder = () => {
             const response = await axiosInstance.put(`/shop/approveOrder/${orderId}`,
                 { newStatus: newStatus },
             )
-            if (response.ok !== 200) throw new Error('Update fail');
-            console.error('Error details:', response.message);
-            getManageOrder()
-
+            if (response.status == 200){
+                getManageOrder();
+            }
         } catch (error) {
             console.error(error);
         }

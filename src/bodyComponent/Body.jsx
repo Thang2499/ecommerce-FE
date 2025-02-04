@@ -6,7 +6,7 @@ const Body = () => {
   return (
     <>
     <div className='flex'>
-        <div className='w-full'>
+        <div className='w-1/2'>
         <Category/>
         </div>
         <div>

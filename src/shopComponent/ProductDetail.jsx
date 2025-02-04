@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
-// import Error from '../image/imageError.svg';
 import { useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -9,13 +8,15 @@ import axiosInstance from '../service/getRefreshToken';
 const ProductDetail = () => {
   const [data, setData] = useState({});
   const [quantity, setQuantity] = useState(1)
+  const [selectedImage, setSelectedImage] = useState(data?.image?.[0] || "");
   const authStore = useSelector(state => state.auth);
   const { id } = useParams();
   const getProductDetail = async () => {
     try {
       const response = await axiosInstance.post('/system/productDetail', { id: id })
       if (response.status !== 200) throw new Error('Error')
-      setData(response.data)
+        setData(response.data)
+      setSelectedImage(response.data.image[0])
     } catch (error) {
       console.log(error)
     }
@@ -98,40 +99,45 @@ const ProductDetail = () => {
       toast.error("Có lỗi xảy ra, vui lòng thử lại!");
     }
   };
+
+  const formatPrice = (price) => {
+    if (!price) return '';
+    return price.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+};
   return (
     <>
       {data ? (
         <div className="bg-gra100 h-vh flex flex-wrap p-8">
           {/* Vùng ảnh */}
           <div className="w-1/2">
-            <div key={data._id} className="ml-6 md:ml-24">
-              {data.image &&
-                data.image.map((image, index) => (
-                  <img
-                    key={index}
-                    className="bg-custom-gray w-full h-96 p-2 mx-auto object-cover"
-                    src={image}
-                  />
-                ))}
-            </div>
-            <div className="ml-8 md:ml-36 flex flex-wrap justify-start mt-4 gap-2">
-              {data.imageDetail ? (
-                data.imageDetail.map((imgDetail, idx) => (
-                  <img
-                    key={idx}
-                    className="w-20 md:w-1/5 cursor-pointer border border-gray-300 rounded-lg"
-                    src={imgDetail}
-                  />
-                ))
-              ) : (
-                <p>Image loading...</p>
-              )}
-            </div>
+          <div className="ml-6 md:ml-24">
+          {/* Ảnh chính */}
+          {selectedImage && (
+            <img
+              className="bg-custom-gray w-full h-96 p-2 mx-auto object-cover"
+              src={selectedImage}
+            />
+          )}
+        </div>
+        <div className="ml-8 md:ml-36 flex flex-wrap justify-start mt-4 gap-2">
+          {data.imageDetail ? (
+            data.imageDetail.map((imgDetail, idx) => (
+              <img
+                key={idx}
+                className="w-20 md:w-1/5 cursor-pointer border border-gray-300 rounded-lg"
+                src={imgDetail}
+                onClick={() => setSelectedImage(imgDetail)} // Cập nhật ảnh chính khi click
+              />
+            ))
+          ) : (
+            <p>Image loading...</p>
+          )}
+        </div>
           </div>
           {/* Vùng thông tin sản phẩm */}
           <div className="w-full md:w-1/2 mt-6 md:mt-0">
             <p className="text-xl font-bold">{data.productName}</p>
-            <p className="text-lg text-green-600">${data.price}</p>
+            <p className="text-lg text-green-600">{formatPrice(data?.price?.toString())}đ</p>
             <p className="text-gray-600 mt-4">{data.description}</p>
             <div className="flex items-center mt-6">
               <span className="font-medium text-gray-700">Số lượng</span>

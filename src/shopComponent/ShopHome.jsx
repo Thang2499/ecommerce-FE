@@ -1,9 +1,16 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { Link, Outlet } from 'react-router'
-
+import { Link, Outlet, useLocation, useNavigate } from 'react-router'
+import { ToastContainer, toast } from 'react-toastify';
 const ShopHome = () => {
-  const {user} = useSelector(state => state.auth);
+  const { user, accessToken } = useSelector(state => state.auth); // Lấy user và token từ Redux
+  const navigate = useNavigate();
+  const location = useLocation();
+  useEffect(() => {
+    if (!accessToken && !user?.name && !user.shopId) {
+     return navigate('/error',{ state: { from: location.pathname } }); 
+    }
+  }, [accessToken, user, navigate]); 
   return (
     <>
       <header className='flex items-center justify-between bg-blue-500 h-12 text-white'>
@@ -12,14 +19,14 @@ const ShopHome = () => {
         </div>
         <div className='flex justify-around w-2/12'>
           <Link to='/'><p className='cursor-pointer hover:text-orange-400 text-lg '>Xem website</p></Link>
-          <p className='cursor-pointer text-lg'>{user.name}</p>
+          <p className='cursor-pointer text-lg'>{user?.name}</p>
         </div>
       </header>
       <div className="flex h-screen">
         {/* Sidebar */}
         <aside className="w-2/12 bg-gray-800 text-white">
           <div className="flex flex-col items-center py-4 bg-gray-900">
-            <p className="mt-2 font-bold cursor-pointer ">{user.name}</p>
+            <p className="mt-2 font-bold cursor-pointer ">{user?.name}</p>
             <p className="text-green-400 text-sm">Online</p>
           </div>
           <nav className="mt-4">
@@ -31,7 +38,7 @@ const ShopHome = () => {
               <Link to='productManage'>Quản lý sản phẩm</Link>
               </li>
               <li className="py-2 px-4 hover:bg-gray-700">
-                <Link to={`shopProfile/${user.shopId._id}`}>Thông tin shop</Link>
+                <Link to={`shopProfile/${user?.shopId?._id}`}>Thông tin shop</Link>
               </li>
               <li className="py-2 px-4 hover:bg-gray-700">
               <Link to='adminManage'>Quản lý Admin</Link>
@@ -55,7 +62,19 @@ const ShopHome = () => {
           <Outlet />
         </div>
       </div>
-
+<ToastContainer
+                position="top-right"
+                autoClose={1000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="light"
+                transition:Bounce
+            />
     </>
   )
 }

@@ -7,7 +7,6 @@ import { ToastContainer, toast } from 'react-toastify';
 export const ShoppingCart = () => {
     const { user } = useSelector(state => state.auth);
     const [cart, setCart] = useState([]);
-    console.log(cart)
     const getCart = async () => {
         try {
             const response = await axiosInstance.post('/system/cart', { id: user._id });
