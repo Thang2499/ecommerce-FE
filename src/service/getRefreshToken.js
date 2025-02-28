@@ -1,8 +1,8 @@
 import axios from  'axios';
-url = "https://ecommerce-83cjyllkn-thangs-projects-c4756ebe.vercel.app"
+
 // 'http://localhost:8080'
 const axiosInstance = axios.create({
-    baseURL: url,
+    baseURL: "https://ecommerce-83cjyllkn-thangs-projects-c4756ebe.vercel.app",
     headers:{
        "Content-Type":  "multipart/form-data"
     },
