@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../service/getRefreshToken';
-
+import { toast } from 'react-toastify';
+import { toastifyOptions } from '../service/toast';
 const ShopRegister = () => {
     const authStore = useSelector(state => state.auth);
     const navigate = useNavigate();
@@ -27,13 +28,14 @@ const ShopRegister = () => {
             const response = await axiosInstance.post('/user/request-seller',
                 formData,
             );
-            if (response.status !== 200) {
+            if (response.status !== 201) {
                 console.error('Error details:', response.message);
-                throw new Error('Đăng ký thất bại');
+                toast.error(response.data.message,toastifyOptions(2000));
             }
-            console.log(response)
-            alert(response.data.message);
-            // navigate('/');
+            toast.success(response.data.message,toastifyOptions(2000));
+            setTimeout(() => {
+                navigate('/');
+            }, 3000);
             console.log('Thành công:', response.data);
         } catch (err) {
             console.error('Lỗi:', err);

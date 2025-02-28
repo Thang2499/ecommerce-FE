@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axiosInstance from '../service/getRefreshToken';
-import { ToastContainer, toast, Bounce } from 'react-toastify';
+import { toast } from 'react-toastify';
+import { toastifyOptions } from '../service/toast';
 const AdminCategory = () => {
   const [categories, setCategories] = useState(null); // Danh sách danh mục
   const [categoriesChild, setCategoriesChild] = useState(null);
@@ -38,10 +39,10 @@ const AdminCategory = () => {
         name: newCategory
       })
       if (response.status === 200) {
-        toast.success('Thêm danh mục thành công');
+        toast.success('Thêm danh mục thành công',toastifyOptions(2000));
         setNewCategory("");
       } else {
-        toast.error('Thêm danh mục thất bại');
+        toast.error('Thêm danh mục thất bại',toastifyOptions(2000));
       }
     } catch (error) {
       console.log(error);
@@ -55,7 +56,7 @@ const AdminCategory = () => {
         name: newCategoryChild,
         parentId: currentParentId
       })
-      toast.success('Thêm danh mục con thành công');
+      toast.success('Thêm danh mục con thành công',toastifyOptions(2000));
     } catch (error) {
       console.log(error);
     }
@@ -74,9 +75,9 @@ const AdminCategory = () => {
     try {
       const response = await axiosInstance.delete(`/admin/category/delete/${categoryId}`);
       if (response.status === 200) {
-        toast.success('Xóa danh mục con thành công');
+        toast.success('Xóa danh mục con thành công',toastifyOptions(2000));
       } else {
-        toast.error('Xóa danh mục con thất bại');
+        toast.error('Xóa danh mục con thất bại',toastifyOptions(2000));
       }
     } catch (error) {
       console.log(error);
@@ -293,19 +294,6 @@ const AdminCategory = () => {
             </div>
           </div>
         )}
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover={false}
-          theme="light"
-          transition={Bounce}
-        />
       </div>
     </>
   )

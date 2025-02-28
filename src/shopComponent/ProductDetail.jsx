@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { HfInference } from "@huggingface/inference";
 import axiosInstance from '../service/getRefreshToken';
+import { toastifyOptions } from '../service/toast';
 const ProductDetail = () => {
   const [data, setData] = useState({});
   const [quantity, setQuantity] = useState(1)
@@ -23,10 +24,10 @@ const ProductDetail = () => {
   }
   useEffect(() => {
     getProductDetail()
-  }, [])
+  }, [id])
   const addToCart = async (id, price, quantity) => {
     if (authStore.isAuth === false) {
-      toast.info('Đang nhập để mua hàng')
+      toast.info('Đang nhập để mua hàng',toastifyOptions(2000))
       return;
     }
     try {
@@ -37,10 +38,10 @@ const ProductDetail = () => {
         unitPrice: price,
       })
       if (res.status !== 200) {
-        toast.error('Lỗi thêm vào giỏ hàng');
-        throw new Error('đăng nhập thất bại');
+        toast.error('Lỗi thêm vào giỏ hàng',toastifyOptions(2000));
+        throw new Error('đăng nhập thất bại',toastifyOptions(2000));
       }
-      toast.success('Thêm vào giỏ hàng thành công')
+      toast.success('Thêm vào giỏ hàng thành công',toastifyOptions(2000))
     } catch (err) {
       console.log(err);
     }
@@ -72,7 +73,7 @@ const ProductDetail = () => {
     e.preventDefault();
     setMessage("");
     if (inputText.trim() === "") {
-      toast.info("Vui lòng nhập đánh giá!");
+      toast.info("Vui lòng nhập đánh giá!",toastifyOptions(2000));
       return;
     }
 
@@ -90,13 +91,13 @@ const ProductDetail = () => {
           ...prevComments,
           { id: Date.now(), text: inputText,timestamp: Date.now() },
         ]);
-        toast.success("Đánh giá của bạn đã được đăng thành công!");
+        toast.success("Đánh giá của bạn đã được đăng thành công!",toastifyOptions(2000));
         setInputText("");
       } else {
         toast.warning("Đánh giá của bạn không được chấp nhận do ngôn từ làm ảnh hưởng đến trải nghiệm người dùng!");
       }
     } else {
-      toast.error("Có lỗi xảy ra, vui lòng thử lại!");
+      toast.error("Có lỗi xảy ra, vui lòng thử lại!",toastifyOptions(2000));
     }
   };
 
@@ -138,7 +139,6 @@ const ProductDetail = () => {
           <div className="w-full md:w-1/2 mt-6 md:mt-0">
             <p className="text-xl font-bold">{data.productName}</p>
             <p className="text-lg text-green-600">{formatPrice(data?.price?.toString())}đ</p>
-            <p className="text-gray-600 mt-4">{data.description}</p>
             <div className="flex items-center mt-6">
               <span className="font-medium text-gray-700">Số lượng</span>
               <div className="ml-4 flex items-center space-x-4">
@@ -161,19 +161,7 @@ const ProductDetail = () => {
               onClick={() => addToCart(data._id, data.price, quantity)}
             >Add to cart</button>
           </div>
-          <ToastContainer
-            position="top-right"
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-            transition:Bounce
-          />
+          <div className="text-gray-600 mt-4 w-3/4 ml-36" dangerouslySetInnerHTML={{ __html: data.description }}></div>
           <div className='ml-24 pl-2 w-3/4 p-6 '>
             <h1 className='text-xl font-bold mb-4'>Comments</h1>
             {loading && <p className='text-gray-500 italic'>Posting comments...</p>}

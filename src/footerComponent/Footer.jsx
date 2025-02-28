@@ -52,7 +52,7 @@ const Footer = () => {
         "Liên Hệ Truyền Thông"
     ];
     return (
-        <footer className='flex justify-around bg-zinc-100 pt-10 pb-5'>
+        <footer className='flex justify-around bg-zinc-100 mt-10 pt-10 pb-5'>
             <div>
                 <ul className=' flex flex-col gap-y-2'>
                     {customerServices.map((item, index) => (

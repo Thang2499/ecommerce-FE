@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import axiosInstance from '../service/getRefreshToken';
 import settings from '../public/settings.svg'
-import { ToastContainer, toast, Bounce } from 'react-toastify';
+import { toast } from 'react-toastify';
 import LoadingSpinner from '../shopComponent/LoadingSpinner';
 import { useSelector } from 'react-redux';
+import { toastifyOptions } from '../service/toast';
 const AdminManage = () => {
   const auth = useSelector(state => state.auth);
   const [listAdmin, setListAdmin] = useState([]);
   const [config, setConfig] = useState(false)
   const [currentAdmin, setCurrentAdmin] = useState({
-    name:'',
+    name: '',
     email: '',
     password: '',
     role: '',
@@ -17,7 +18,7 @@ const AdminManage = () => {
     address: ''
   });
   const [addAdmin, setAddAdmin] = useState(false);
-   const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formAddAdmin, setFormAddAdmin] = useState({
     adminName: '',
     adminEmail: '',
@@ -27,8 +28,8 @@ const AdminManage = () => {
     adminAddress: ''
   });
 
- 
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     const formData = new FormData();
@@ -40,31 +41,51 @@ const AdminManage = () => {
     formData.append('address', formAddAdmin.adminAddress);
     if (formAddAdmin.adminRole === 'ADMIN') {
       formData.append('isActive', true)
-      const response = axiosInstance.post('/admin/create/admin', formData);
+      const response = await axiosInstance.post('/admin/create/admin', formData);
+      console.log(response)
       if (response.status === 201) {
-       toast.success('Tạo quản trị viên thành công');
-       setLoading(false);
+        toast.success('Tạo quản trị viên thành công',toastifyOptions(2000));
+        setLoading(false);
+        setAddAdmin(!addAdmin)
+        setFormAddAdmin({
+          name: '',
+          email: '',
+          password: '',
+          role: '',
+          phone: '',
+          address: ''
+        })
       } else {
-        toast.error('Tạo quản trị viên thất bại');
+        toast.error('Tạo quản trị viên thất bại',toastifyOptions(2000));
         setLoading(false);
       }
-    }else if(formAddAdmin.adminRole === 'READ_ONLY'){
+    } else if (formAddAdmin.adminRole === 'READ_ONLY') {
       const response = axiosInstance.post('/admin/create/read-only', formData);
       if (response.status === 201) {
-        toast.success('Tạo quản trị viên thành công');
+        toast.success('Tạo quản trị viên thành công',toastifyOptions(2000));
         setLoading(false);
+        setAddAdmin(!addAdmin)
+        setFormAddAdmin({
+          name: '',
+          email: '',
+          password: '',
+          role: '',
+          phone: '',
+          address: ''
+        })
       } else {
-        toast.error('Tạo quản trị viên thất bại');
+        toast.error('Tạo quản trị viên thất bại',toastifyOptions(2000));
         setLoading(false);
       }
-    }else{
+    } else {
       setLoading(false);
-      return toast.info('Chưa có chức năng tạo super admin');
+      return toast.info('Chưa có chức năng tạo super admin',toastifyOptions(2000));
     }
   };
   const getAdminList = async () => {
     try {
       const response = await axiosInstance.get('/admin/listAdmin', { params: query });
+      console.log(response)
       if (response.status === 200) {
         const { adminList, totalPages, totalAdmin } = response.data;
         setListAdmin(adminList)
@@ -74,15 +95,15 @@ const AdminManage = () => {
           totalAdmin
         });
       } else {
-        toast.error('Load dữ liệu thất bại');
+        toast.error('Load dữ liệu thất bại',toastifyOptions(2000));
       }
     } catch (error) {
-      toast.error('Load dữ liệu thất bại');
+      toast.error('Load dữ liệu thất bại',toastifyOptions(2000));
     }
   };
   const openSetting = (admin) => {
-    if(auth.user.role === 'READ_ONLY'){
-      return toast.error('Bạn không có quyền truy cập');
+    if (auth.user.role === 'READ_ONLY') {
+      return toast.error('Bạn không có quyền truy cập',toastifyOptions(2000));
     }
     setCurrentAdmin(admin);
     setConfig(!config);
@@ -129,7 +150,7 @@ const AdminManage = () => {
   }, [])
   return (
     <div>
-        {loading && <LoadingSpinner />}
+      {loading && <LoadingSpinner />}
       <nav className="bg-blue-600 text-white py-4 px-6 shadow-md ">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <h1 className="text-2xl font-bold">Quản lý quản trị viên</h1>
@@ -175,13 +196,13 @@ const AdminManage = () => {
           <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50">
             <div className="bg-white w-1/2 p-6 rounded-lg">
               <h2 className="text-xl font-semibold mb-4">Chỉnh sửa quản trị viên</h2>
-              {currentAdmin.avatar? <div className="mb-4">
+              {currentAdmin.avatar ? <div className="mb-4">
                 <label className="block font-medium text-gray-700">Hình đại diện</label>
                 <img
                   className="w-16 mt-1 p-2 border border-gray-300 rounded-md"
                   src={currentAdmin.avatar}
                 />
-              </div>: null}
+              </div> : null}
               <div className="mb-4">
                 <label className="block font-medium text-gray-700">Tên</label>
                 <input
@@ -224,9 +245,8 @@ const AdminManage = () => {
               </div>
 
               <div className="mb-4">
-                <label htmlFor="adminRole" className="block text-sm font-medium text-gray-700">Cập nhật Quyền</label>
+                <label className="block text-sm font-medium text-gray-700">Cập nhật Quyền</label>
                 <select
-                  id="adminRole"
                   name="role"
                   value={currentAdmin.role}
                   onChange={(e) => handleChangeFormAddAdmin(e)}
@@ -332,7 +352,7 @@ const AdminManage = () => {
             <form onSubmit={handleSubmit}>
 
               <div className="mb-4">
-                <label htmlFor="adminName" className="block text-sm font-medium text-gray-700">Tên Quản Trị Viên</label>
+                <label className="block text-sm font-medium text-gray-700">Tên Quản Trị Viên</label>
                 <input
                   type="text"
                   name="adminName"
@@ -344,12 +364,10 @@ const AdminManage = () => {
                 />
               </div>
 
-
               <div className="mb-4">
-                <label htmlFor="adminEmail" className="block text-sm font-medium text-gray-700">Email</label>
+                <label className="block text-sm font-medium text-gray-700">Email</label>
                 <input
                   type="email"
-                  id="adminEmail"
                   name="adminEmail"
                   value={formAddAdmin.adminEmail}
                   onChange={(e) => handleChangeFormAddAdmin(e)}
@@ -359,12 +377,10 @@ const AdminManage = () => {
                 />
               </div>
 
-
               <div className="mb-4">
-                <label htmlFor="adminPassword" className="block text-sm font-medium text-gray-700">Mật khẩu</label>
+                <label className="block text-sm font-medium text-gray-700">Mật khẩu</label>
                 <input
                   type="password"
-                  id="adminPassword"
                   name="adminPassword"
                   value={formAddAdmin.adminPassword}
                   onChange={(e) => handleChangeFormAddAdmin(e)}
@@ -375,38 +391,34 @@ const AdminManage = () => {
               </div>
 
               <div className="mb-4">
-                <label htmlFor="adminPassword" className="block text-sm font-medium text-gray-700">Số điện thoại</label>
+                <label className="block text-sm font-medium text-gray-700">Số điện thoại</label>
                 <input
                   type="number"
-                  id="adminPhone"
                   name="adminPhone"
                   value={formAddAdmin.adminPhone}
                   onChange={(e) => handleChangeFormAddAdmin(e)}
                   className="mt-1 block w-full p-2.5 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Nhập mật khẩu"
+                  placeholder="Nhập email"
                   required
                 />
               </div>
 
               <div className="mb-4">
-                <label htmlFor="adminPassword" className="block text-sm font-medium text-gray-700">Địa chỉ</label>
+                <label className="block text-sm font-medium text-gray-700">Địa chỉ</label>
                 <input
                   type="text"
-                  id="adminPassword"
                   name="adminAddress"
                   value={formAddAdmin.adminAddress}
                   onChange={(e) => handleChangeFormAddAdmin(e)}
                   className="mt-1 block w-full p-2.5 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Nhập mật khẩu"
+                  placeholder="Nhập địa chỉ"
                   required
                 />
               </div>
 
-
               <div className="mb-4">
-                <label htmlFor="adminRole" className="block text-sm font-medium text-gray-700">Chọn Quyền</label>
+                <label className="block text-sm font-medium text-gray-700">Chọn Quyền</label>
                 <select
-                  id="adminRole"
                   name="adminRole"
                   value={formAddAdmin.adminRole}
                   onChange={(e) => handleChangeFormAddAdmin(e)}
@@ -424,33 +436,14 @@ const AdminManage = () => {
                   type="submit"
                   className="px-6 py-2.5 bg-blue-600 text-sm text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                  Tạo Quản Trị Viên 
+                  Tạo Quản Trị Viên
                 </button>
-                {/* <button
-                  type="submit"
-                  className="px-6 py-2.5 bg-blue-600 text-sm text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  Tạo Quản Trị Viên Chỉnh sửa
-                </button> */}
 
               </div>
             </form>
           </div>
         </div>
       )}
-<ToastContainer
-                position="top-right"
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover={false}
-                theme="light"
-                transition={Bounce}
-            />
     </div>
   )
 }

@@ -6,35 +6,29 @@ import wishlist from '../public/headerImg/wishlist.svg'
 import search from '../public/headerImg/search.svg'
 import { Link, useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
-import { logout } from '../service/stateManage/authSlice'
+import { fetchWishList, logout } from '../service/stateManage/authSlice'
 import axiosInstance from '../service/getRefreshToken'
 const Header = () => {
   const authStore = useSelector(state => state.auth);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedTerm, setDebouncedTerm] = useState("");
+  const [products, setProducts] = useState([]);
+  const [isDropdownVisible, setIsDropdownVisible] = useState(false);
+  const dropdownRef = useRef(null);
   const menuRef = useRef(null);
-  const [numberWishList,setNumberWishList] = useState(0)
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const toggleMenu = () => setMenuOpen((prev) => !prev);
-
-  const getCart = async () => {
-    if (!authStore?.user?._id) {
-      // console.warn("Người dùng chưa đăng nhập hoặc không có ID");
-      setNumberWishList(0);
-      return;
-  }
-    try {
-        const response = await axiosInstance.post('/system/wishList', { id: authStore.user._id});
-        if(response.status === 200){
-          setNumberWishList(response.data.length > 0 ? response.data.length : 0);
-        }
-    } catch (error) {
-        console.error('Lỗi khi lấy giỏ hàng:', error);
-    }
-}
+  const { user, wishList } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    getCart();
+    if (user?._id) {
+      dispatch(fetchWishList(user._id));
+    }
+  }, [dispatch, user]);
+
+  useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setMenuOpen(false);
@@ -50,6 +44,41 @@ const Header = () => {
     location.reload();
   };
 
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedTerm(searchTerm);
+    }, 2000)
+    return () => {
+      clearTimeout(handler)
+    }
+  }, [searchTerm]);
+
+  useEffect(() => {
+    if (debouncedTerm) {
+      fetchProducts(debouncedTerm)
+    }
+  }, [debouncedTerm]);
+  const fetchProducts = async (term) => {
+    try {
+      const response = await axiosInstance.post(`/system/productSearch/${term}`)
+      if (response.status !== 200) throw new Error('Error')
+      setProducts(response.data)
+      setIsDropdownVisible(true);
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  useEffect(() => {
+    const clickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownVisible(false);
+      }
+    };
+    document.addEventListener("mousedown", clickOutside);
+    return () => {
+      document.removeEventListener("mousedown", clickOutside);
+    };
+  }, []);
   return (
     <>
       <div className=' h-28 bg-gradient-to-b from-orange-700 to-orange-400 sticky top-0 z-50'>
@@ -137,7 +166,40 @@ const Header = () => {
             <Link to='/'><h1 className='text-4xl text-white cursor-pointer'>Shopee</h1></Link>
           </div>
           <div className='w-7/12 relative'>
-            <input className='w-full h-10 pl-2 border border-gray-300 focus:outline-none rounded ' type="text" placeholder='Tìm kiếm...' />
+            <input
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onFocus={() => setIsDropdownVisible(true)}
+              className='w-full h-10 pl-2 border border-gray-300 focus:outline-none rounded ' type="text" placeholder='Tìm kiếm...' />
+            {isDropdownVisible && products.length > 0 && (
+              <div
+                ref={dropdownRef}
+                className="absolute z-10 bg-white border border-slate-300 rounded-md shadow-md mt-1 w-full max-h-80 overflow-y-scroll"
+              >
+                <table className="table-auto w-full text-left">
+                  <tbody>
+                    {products.map((item, index) => (
+                     <Link to={`/productDetail/${item._id}`}> <tr key={index} className="hover:bg-slate-50">
+                        <td>
+                          {item.image &&
+                            Array.isArray(item.image) &&
+                            item.image.map((image, i) => (
+                              <img
+                                key={i}
+                                className="w-28"
+                                src={image}
+                                alt={`Product ${i}`}
+                              />
+                            ))}
+                        </td>
+                        <td className="text-xs px-1 py-1">{item.productName}</td>
+                      </tr>
+                      </Link>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
             <img
               src={search}
               alt="search icon"
@@ -145,7 +207,7 @@ const Header = () => {
             />
           </div>
           <div className='flex justify-around w-1/12 relative'>
-          <span className='left-7 bg-white rounded-full px-1.5 text-sm cursor-pointer absolute z-10'>{numberWishList}</span>
+            <span className='left-7 bg-white rounded-full px-1.5 text-sm cursor-pointer absolute z-10'>{wishList?.length}</span>
             <Link to='/wishlist'><img src={wishlist} className="w-8 cursor-pointer hover:scale-110 pt-1" alt="" /></Link>
             <Link to='/cart'><img src={cart} className="w-8 cursor-pointer hover:scale-110 pt-1" alt="" /></Link>
           </div>

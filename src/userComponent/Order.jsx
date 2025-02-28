@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axiosInstance from '../service/getRefreshToken';
+import { toastifyOptions } from '../service/toast';
 
 const Order = () => {
   const authStore = useSelector(state => state.auth);
@@ -15,7 +16,6 @@ const Order = () => {
     phoneNumber: '',
     email: authStore.user ? authStore.user.email : ''
   });
-
   const [errors, setErrors] = useState({});
   const [fee, setFee] = useState(null);
   const [error, setError] = useState(null);
@@ -53,7 +53,6 @@ const Order = () => {
   const handleViewCart = async () => {
     try {
       const res = await axiosInstance.get('/system/viewCart',)
-      console.log(res)
       setOrder(res.data.itemsInCart)
     } catch (err) {
       console.log(err);
@@ -71,11 +70,11 @@ const Order = () => {
       if (responsePayment.data && responsePayment.data.payUrl) {
         window.location.href = responsePayment.data.payUrl;
       } else {
-        toast.error('Error initiating payment');
+        toast.error('Error initiating payment',toastifyOptions(1000));
       }
     } catch (error) {
       console.error('Error occurred: ', error);
-      toast.error('Payment failed');
+      toast.error('Payment failed',toastifyOptions(1000));
     }
   };
   //-------------------------------------------------
@@ -160,13 +159,15 @@ const Order = () => {
   }, [selectedDistrict, selectedWard]);
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    let formErrors = {};
-    if (!formData.firstName) return formErrors.firstName = 'First Name is required'
-    if (!formData.streetAddress) return formErrors.streetAddress = 'Street Address is required';
-    if (!formData.phoneNumber) return formErrors.phoneNumber = 'Phone Number is required';
-    if (!formData.email) return formErrors.email = 'Email Address is required';
 
+    e.preventDefault();
+
+    let formErrors = {};
+
+    if (!formData.firstName) return toast.error('First Name is required',toastifyOptions(1000))
+    if (!formData.streetAddress) return  toast.error('Street Address is required',toastifyOptions(1000));
+    if (!formData.phoneNumber) return  toast.error('Phone Number is required',toastifyOptions(1000));
+    if (!formData.email) return toast.error('Email Address is required',toastifyOptions(1000));
     if (!selectedProvince) {
       return setProvinceError("Vui lòng chọn Tỉnh/Thành phố");
     }
@@ -176,23 +177,26 @@ const Order = () => {
     if (!selectedWard) {
       return setWardError("Vui lòng chọn Phường/Xã");
     }
-
     if (order.length === 0) {
-      toast.error('Giỏ hàng của bạn đang trống. Vui lòng thêm sản phẩm trước khi đặt hàng.');
+      console.log(order.length)
+      toast.error('Giỏ hàng của bạn đang trống. Vui lòng thêm sản phẩm trước khi đặt hàng.',toastifyOptions(1000));
       return;
     }
-    if (Object.keys(formErrors).length === 0) {
-     return setFormData({
-        firstName: '',
-        streetAddress: '',
-        phoneNumber: '',
-        email: ''
-      });
-    } else {
-     setErrors(formErrors);
-    }
+
+    // if (Object.keys(formErrors).length === 0) {
+    //   console.log('a')
+    //   return setFormData({
+    //     firstName: '',
+    //     streetAddress: '',
+    //     phoneNumber: '',
+    //     email: ''
+    //   });
+    // } else {
+    //   setErrors(formErrors);
+    // }
+    console.log('a')
     if(!selectedPayment){
-      toast.error('Vui lòng chọn phương thức thanh toán')
+      toast.error('Vui lòng chọn phương thức thanh toán',toastifyOptions(1000))
       return;
     }
     //-------------------------------------------
@@ -202,9 +206,10 @@ const Order = () => {
         selectedPayment:selectedPayment,
         fee:fee
       },
+     
   );
-
-    if (response.status !== 200) throw new Error('Error in creating order');
+  console.log(response)
+    if (response.status !== 200) toast.error('Error in creating order');
     } catch (error) {
       console.error('Error create Order:', error);
       throw error;
@@ -216,13 +221,14 @@ const Order = () => {
     // {credentials: 'include'});
     // toast.success('Đơn hàng của bạn đã được xử lý và email xác nhận đã được gửi!');
     //---------------------------------------------
+    
     if(selectedPayment === 'Momo'){
       await handlePayment();
        return;
      }
      if(selectedPayment === 'Cash on Delivery'){
       handleViewCart();
-      toast.success('Thanks for your order')
+      toast.success('Thanks for your order',toastifyOptions(1000))
        return;
      }
   };
@@ -355,6 +361,7 @@ const Order = () => {
               <button
                 className="bg-red-600 text-white w-40 h-11 mt-4 rounded hover:bg-red-700 transition duration-200"
                 type="submit"
+                onClick={handleSubmit}
               >
                Đặt hàng
               </button>
@@ -432,20 +439,6 @@ const Order = () => {
             <button className='bg-red-600 text-white w-40 h-11 ml-3 rounded'>Apply Coupon</button>
           </div>
         </div>
-        {/* <ToastContainer /> */}
-        <ToastContainer
-      position="top-right"
-      autoClose={1000}
-      hideProgressBar={false}
-      newestOnTop={false}
-      closeOnClick
-      rtl={false}
-      pauseOnFocusLoss
-      draggable
-      pauseOnHover
-      theme="light"
-      transition:Bounce
-/>  
       </div>
     </>
   )

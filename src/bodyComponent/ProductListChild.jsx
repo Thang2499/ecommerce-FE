@@ -1,11 +1,14 @@
-import React from 'react'
-import { ToastContainer, toast, Bounce } from 'react-toastify';
+import React, { useEffect } from 'react'
+import { toast } from 'react-toastify';
 import axiosInstance from '../service/getRefreshToken';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
+import { fetchWishList } from '../service/stateManage/authSlice';
+import { toastifyOptions } from '../service/toast';
 const ProductListChild = ({ items }) => {
+  const { productName, image, price, _id } = items;
   const auth = useSelector((state) => state.auth)
-    const { productName, image, price, _id } = items;
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const formatPrice = (price) => {
         if (!price) return '';
@@ -15,14 +18,18 @@ const ProductListChild = ({ items }) => {
     const addToWishList = async (idProduct) => {
       const wishList = [{ productId: idProduct.toString() }];
       try {
-        const response = await axiosInstance.post(`/system/addWishList/${auth.user._id}`,{wishList:wishList})
+        const response = await axiosInstance.post(`/system/addWishList/${auth.user._id}`,{wishList:wishList});
         if(response.status === 200  && response.data.message === 'Sản phẩm đã có trong wishlist') {
-          toast.info('Sản phẩm đã có trong danh sách yêu thích')
+
+          toast.info('Sản phẩm đã có trong danh sách yêu thích',toastifyOptions(1000));
         }else{
-          toast.success('Đã thêm sản phẩm vào danh sách yêu thích')
+          
+          dispatch(fetchWishList(auth.user._id));
+          toast.success('Đã thêm sản phẩm vào danh sách yêu thích', toastifyOptions(1000));
         }
       } catch (error) {
-        toast.info('Vui lòng đăng nhập để mua hàng')
+        toast.info('Vui lòng đăng nhập để thêm vào wishlist',toastifyOptions(1000));
+        navigate('/login');
         console.log(error)
       }
     }
@@ -39,6 +46,7 @@ const ProductListChild = ({ items }) => {
         }           
     } catch (error) {
       toast.info('Vui lòng đăng nhập để mua hàng')
+      navigate('/login');
         console.log(error)
     }
 };
@@ -77,7 +85,7 @@ const handleProductDetail = (idProduct) =>{
       Add to cart
     </button>
     
-  <ToastContainer
+  {/* <ToastContainer
   position="top-right"
   autoClose={1000}
   hideProgressBar={false}
@@ -89,7 +97,7 @@ const handleProductDetail = (idProduct) =>{
   pauseOnHover
   theme="light"
   transition:Bounce
-/> 
+/>  */}
   </div>
   )
 }

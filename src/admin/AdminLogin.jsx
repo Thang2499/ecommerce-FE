@@ -17,6 +17,7 @@ const AdminLogin = () => {
       const response = await axiosInstance.post('/admin/login', {
         email, password
       });
+      console.log(response)
       if (response && response.status === 200) {
         console.log(response);
       } else {

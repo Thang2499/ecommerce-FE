@@ -1,16 +1,16 @@
 import React from 'react'
 import Category from './Category'
-import ProductsList from './ProductsList'
+import { Outlet } from 'react-router'
 
 const Body = () => {
   return (
     <>
     <div className='flex'>
-        <div className='w-1/2'>
+        <div className='w-1/5 z-20'>
         <Category/>
         </div>
-        <div>
-        <ProductsList/>
+        <div className='w-4/5'>
+          <Outlet/>
         </div>
     </div>
     </>

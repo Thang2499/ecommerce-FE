@@ -3,13 +3,13 @@ import axiosInstance from '../service/getRefreshToken';
 import Select from 'react-select';
 import settings from '../public/settings.svg'
 import { useSelector } from 'react-redux';
-import { ToastContainer, toast, Bounce } from 'react-toastify';
+import { toast } from 'react-toastify';
 import LoadingSpinner from './LoadingSpinner';
+import { toastifyOptions } from '../service/toast';
 // import { CKEditor } from '@ckeditor/ckeditor5-react';
 // import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
-
+import { CKEditor } from 'ckeditor4-react';
 const ProductManage = () => {
-    // const [editorData, setEditorData] = useState('');
     const auth = useSelector((state) => state.auth);
     const [productLists, setProductLists] = useState([]);
     const [category, setCategory] = useState([]);
@@ -44,14 +44,16 @@ const ProductManage = () => {
         page: 1,
         limit: 20
     });
-    // const handleEditorChange = (event, editor) => {
-    //     const data = editor.getData();
-    //     setEditorData(data);
-    //     setFormAddProduct((prevProduct) => ({
-    //         ...prevProduct,
-    //         description: data,
-    //     }));
-    // };
+
+    useEffect(() => {
+        const editorElement = document.getElementById("editor", {
+            filebrowserImageUploadUrl: "/upload-image",
+        });
+        // console.log(editorElement);
+        if (editorElement && window.CKEDITOR) {
+            window.CKEDITOR.replace(editorElement);
+        }
+    }, []);
 
     const getProducts = async () => {
         const response = await axiosInstance.post('/shop/productList',
@@ -134,26 +136,32 @@ const ProductManage = () => {
                 [name]: value,
             }));
         }
-       
     };
-const handeChangeUpdate = (e) => {
-    const { name, value } = e.target;
-    if (name === 'price') {
-        let formattedValue = value.replace(/[^0-9]/g, '');
-        setCurrentProduct((prevProduct) => ({
-            ...prevProduct,
-            [name]: formattedValue ? formattedValue.replace(/\./g, '') : '',
+    const handleEditorChange = (e) => {
+        const description = e.editor.getData();
+        setFormAddProduct((prevState) => ({
+            ...prevState,
+            description,
         }));
-    }else{
-    setCurrentProduct((prevProduct) => ({
-        ...prevProduct,
-        [name]: value,
-    }));
-}
-}
+    };
+    const handeChangeUpdate = (e) => {
+        const { name, value } = e.target;
+        if (name === 'price') {
+            let formattedValue = value.replace(/[^0-9]/g, '');
+            setCurrentProduct((prevProduct) => ({
+                ...prevProduct,
+                [name]: formattedValue ? formattedValue.replace(/\./g, '') : '',
+            }));
+        } else {
+            setCurrentProduct((prevProduct) => ({
+                ...prevProduct,
+                [name]: value,
+            }));
+        }
+    }
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setLoading(true);
+        // setLoading(true);
         const formData = new FormData();
         formData.append('name', formAddProduct.name);
         formData.append('price', formAddProduct.price);
@@ -161,7 +169,7 @@ const handeChangeUpdate = (e) => {
         formData.append('category', formAddProduct.category);
         formData.append('image', formAddProduct.image);
         formData.append('shopId', formAddProduct.shopId);
-
+        console.log('a',formAddProduct.description);
         if (formAddProduct.imageDetail && formAddProduct.imageDetail.length > 0) {
             formAddProduct.imageDetail.forEach((file) => {
                 formData.append('imageDetail', file);
@@ -173,19 +181,19 @@ const handeChangeUpdate = (e) => {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-            setLoading(false);
+            // setLoading(false);
             if (response.status === 201) {
-                toast.success('Thêm sản phẩm thành công');
+                toast.success('Thêm sản phẩm thành công', toastifyOptions(3000));
                 getProducts();
                 setAddProduct(false);
             } else {
-                toast.error('Thêm sản phẩm thất bại');
+                toast.error('Thêm sản phẩm thất bại', toastifyOptions(3000));
             }
         } catch (error) {
             console.error('Error creating product', error);
         }
     };
- const updateProduct = async () => {
+    const updateProduct = async () => {
         setLoading(true);
         const formData = new FormData();
         formData.append('name', currentProduct.productName);
@@ -211,20 +219,20 @@ const handeChangeUpdate = (e) => {
         } catch (error) {
             console.error('Error updating product', error);
         }
- }
- const deleteProduct = async () => {
-    try {
-        const response = await axiosInstance.delete(`/shop/deleteProduct/${currentProduct._id}?shopId=${auth.user.shopId._id}`);
-        if (response.status === 200) {
-            toast.success('Xóa sản phẩm thành công');
-            getProducts();
-        } else {
-            toast.error('Xóa sản phẩm thất bại');
-        }
-    } catch (error) {
-        console.error('Error deleting product', error);
     }
- };
+    const deleteProduct = async () => {
+        try {
+            const response = await axiosInstance.delete(`/shop/deleteProduct/${currentProduct._id}?shopId=${auth.user.shopId._id}`);
+            if (response.status === 200) {
+                toast.success('Xóa sản phẩm thành công');
+                getProducts();
+            } else {
+                toast.error('Xóa sản phẩm thất bại');
+            }
+        } catch (error) {
+            console.error('Error deleting product', error);
+        }
+    };
     const categoryOptions = category.flatMap((cat) => [
         { value: cat._id, label: cat.name },
         ...cat.children.map((child) => ({
@@ -374,7 +382,7 @@ const handeChangeUpdate = (e) => {
                                 onChange={(e) => handeChangeUpdate(e)}
                                 className="w-full mt-1 p-2 border border-gray-300 rounded-md"
                                 value={currentProduct.productName}
-                                
+
                             />
                         </div>
                         <div className="mb-4">
@@ -385,7 +393,7 @@ const handeChangeUpdate = (e) => {
                                 onChange={(e) => handeChangeUpdate(e)}
                                 className="w-full mt-1 p-2 border border-gray-300 rounded-md"
                                 value={formatPrice((currentProduct.price).toString())}
-                                
+
                             />
                         </div>
                         <div className="mb-4">
@@ -409,7 +417,7 @@ const handeChangeUpdate = (e) => {
                                 onChange={(e) => handeChangeUpdate(e)}
                                 className="w-full mt-1 p-2 border border-gray-300 rounded-md"
                                 value={currentProduct.description}
-                                
+
                             />
                         </div>
                         <div className="mb-4">
@@ -420,18 +428,18 @@ const handeChangeUpdate = (e) => {
                                 onChange={(e) => handeChangeUpdate(e)}
                                 className="w-1/6 cursor-pointer transition-transform duration-200 hover:scale-105"
                                 src={currentProduct.image}
-                               
+
                             />
                         </div>
 
                         <div className="flex gap-4">
                             <button
-                            onClick={updateProduct}
-                            className="bg-blue-500 text-white py-2 px-4 rounded-md">Cập nhật</button>
+                                onClick={updateProduct}
+                                className="bg-blue-500 text-white py-2 px-4 rounded-md">Cập nhật</button>
 
                             <button
-                            onClick={deleteProduct}
-                            className="bg-red-500 text-white py-2 px-4 rounded-md">Xóa</button>
+                                onClick={deleteProduct}
+                                className="bg-red-500 text-white py-2 px-4 rounded-md">Xóa</button>
                             <button
                                 onClick={closePopup}
                                 className="bg-gray-300 text-gray-700 py-2 px-4 rounded-md"
@@ -444,7 +452,7 @@ const handeChangeUpdate = (e) => {
             )}
             {addProduct && (
                 <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50">
-                    <div className="bg-white w-1/2 p-6 max-h-fit rounded-lg">
+                    <div className="bg-white w-1/2 p-6 max-h-[100vh] overflow-y-auto rounded-lg">
                         <h2 className="text-xl font-semibold mb-4">Thêm sản phẩm</h2>
                         <div className="mb-4">
                             <label className="block font-medium text-gray-700">Tên sản phẩm</label>
@@ -468,25 +476,22 @@ const handeChangeUpdate = (e) => {
                         </div>
                         <div className="mb-4">
                             <label className="block font-medium text-gray-700">Mô tả</label>
-                            <textarea
+                            {/* <textarea
                                 type="text"
                                 name='description'
                                 className="w-full mt-1 p-2 border border-gray-300 rounded-md"
                                 value={formAddProduct.description}
                                 onChange={(e) => handleChange(e)}
-                            />
-                            {/* <CKEditor
-                                editor={ClassicEditor}
-                                data={editorData}
-                                onChange={handleEditorChange}  // Được gọi khi người dùng thay đổi nội dung
-                                config={{
-                                    licenseKey: 'eyJhbGciOiJFUzI1NiJ9.eyJleHAiOjE3Mzg1NDA3OTksImp0aSI6IjU2ODU5MjNlLTVmMDYtNDUyYS1iOWQ3LTQwNTNiNWExNGM1YyIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL3Byb3h5LWV2ZW50LmNrZWRpdG9yLmNvbSIsImRpc3RyaWJ1dGlvbkNoYW5uZWwiOlsiY2xvdWQiLCJkcnVwYWwiLCJzaCJdLCJ3aGl0ZUxhYmVsIjp0cnVlLCJsaWNlbnNlVHlwZSI6InRyaWFsIiwiZmVhdHVyZXMiOlsiKiJdLCJ2YyI6Ijc0MjIwMDVlIn0.TFjkQnf55ojpHWr9hzj_Se62kBIJFdjNgeVHmkCbi6AXNS4PQjiIoEHSVn80kGk9l2fnhyiAJ9KqObCSrsbKPg', // Thay YOUR_LICENSE_KEY bằng khóa giấy phép của bạn
-                                    // extraPlugins: [MyCustomUploadAdapterPlugin],
-                                    ckfinder: {
-                                        uploadUrl: 'http://localhost:8080/shop/addProduct'  // Đường dẫn để upload hình ảnh
-                                    }
-                                }}
                             /> */}
+                            <CKEditor
+    name="description"
+    data={formAddProduct.description} // Truyền giá trị hiện tại vào CKEditor
+    onChange={handleEditorChange} // Gọi hàm handleEditorChange khi có thay đổi
+    config={{
+        // filebrowserUploadUrl: "/upload-image",
+        extraPlugins: "image",
+    }}
+/>
                         </div>
                         <div className="mb-4">
                             <label className="block font-medium text-gray-700">Thể loại</label>
@@ -535,19 +540,6 @@ const handeChangeUpdate = (e) => {
                     </div>
                 </div>
             )}
-            <ToastContainer
-                position="top-right"
-                autoClose={3000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover={false}
-                theme="light"
-                transition={Bounce}
-            />
         </>
     )
 }

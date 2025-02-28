@@ -1,11 +1,25 @@
-import {createSlice} from '@reduxjs/toolkit'
-const initialState = {
-    isAuth: JSON.parse(localStorage.getItem('isAuth')) || false,
-    isLoading: false,
-    user: JSON.parse(localStorage.getItem('user')) || null,
-    accessToken: localStorage.getItem('accessToken') || ''
-};
+import {createAsyncThunk, createSlice} from '@reduxjs/toolkit'
+import axiosInstance from '../getRefreshToken';
 
+export const fetchWishList = createAsyncThunk(
+    "auth/fetchWishList",
+    async (userId, { rejectWithValue }) => {
+        try {
+            const response = await axiosInstance.post("/system/wishList", { id: userId });
+        return response.data || [];
+      } catch (error) {
+        return rejectWithValue(error.response?.data || "Lỗi khi lấy danh sách yêu thích");
+      }
+    }
+  );
+
+  const initialState = {
+    isAuth: JSON.parse(localStorage.getItem('isAuth')) ?? false,  
+    isLoading: false,
+    user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null, 
+    accessToken: localStorage.getItem('accessToken') || '',
+    wishList: [],
+};
 
 export const authSlice = createSlice({
     name: 'auth',
@@ -24,6 +38,7 @@ export const authSlice = createSlice({
             state.isAuth = false;
             state.user = null;
             state.accessToken = '';
+            state.wishList = [];
             // Xóa thông tin khỏi localStorage
             localStorage.removeItem('isAuth');
             localStorage.removeItem('user');
@@ -32,7 +47,16 @@ export const authSlice = createSlice({
         setLoading: (state, action) => {
             state.isLoading = action.payload;
         }
-    }
+    },
+    extraReducers: (builder) => {
+        builder
+          .addCase(fetchWishList.fulfilled, (state, action) => {
+            state.wishList = action.payload;
+          })
+          .addCase(fetchWishList.rejected, (state, action) => {
+            console.error("Lỗi khi cập nhật wishlist:", action.payload);
+          });
+      },
 });
 
 

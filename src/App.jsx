@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import './App.css'
 import { Routes, Route, useLocation } from 'react-router-dom';
 import Header from './headerComponent/Header';
@@ -24,6 +23,11 @@ import Order from './userComponent/Order';
 import ManageOrder from './shopComponent/ManageOrder';
 import ProductDetail from './shopComponent/ProductDetail';
 import ErrorPage from './service/ErrorPage';
+import { ToastContainer } from 'react-toastify';
+import ProductsList from './bodyComponent/ProductsList';
+import BodyByCategory from './bodyComponent/BodyByCategory';
+import UserProfile from './userComponent/UserProfile';
+import ViewOrder from './userComponent/ViewOrder';
 function App() {
   const location = useLocation();
   return (
@@ -53,17 +57,19 @@ function App() {
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/cart" element={<ShoppingCart />} />
         <Route path="/order" element={<Order />} />
+        <Route path="/profile" element={<UserProfile />} />
+        <Route path="/viewOrder" element={<ViewOrder />} />
         <Route path='/productDetail/:id' element={<ProductDetail />} />
         {/* Home Routes */}
-        <Route>
-          <Route path='' element={<Body />} />
+        <Route path='' element={<Body />} >
+          <Route path='' element={<ProductsList />} />
+          <Route path='/:CategoryId' element={<BodyByCategory />} />
         </Route>
         {/* Shop Routes */}
         <Route path='/shopPage' element={<ShopHome />}>
           <Route path='shopProfile/:id' element={<ShopProfile />} />
-          <Route path='productManage' element={<ProductManage />} />
+          <Route path='' element={<ProductManage />} />
           <Route path='manageOrder' element={<ManageOrder />} />
-          
         </Route>
       </Routes>
 
@@ -72,6 +78,8 @@ function App() {
         location.pathname !== "/login" &&
         !location.pathname.startsWith("/shop") &&
         <Footer />}
+
+      <ToastContainer />
     </>
   )
 }

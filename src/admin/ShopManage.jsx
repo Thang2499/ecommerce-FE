@@ -125,7 +125,7 @@ const ShopManage = () => {
                             <p className="font-semibold w-1/6 text-sm text-gray-700">Hành động</p>
                         </div>
 
-                        {shopListReq.map((shop) => (
+                        {shopListReq?.map((shop) => (
                             <div key={shop._id} className="flex py-3 px-4 border-b text-sm hover:bg-gray-50">
                                 <p className="w-1/6 text-gray-800">{shop.name}</p>
                                 <p className="w-1/6 text-gray-800">{shop.phone}</p>

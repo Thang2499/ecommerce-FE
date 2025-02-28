@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router';
 import trash from '../public/trash.svg'
 import { ToastContainer, toast } from 'react-toastify';
+import { toastifyOptions } from '../service/toast';
 export const ShoppingCart = () => {
     const { user } = useSelector(state => state.auth);
     const [cart, setCart] = useState([]);
@@ -25,9 +26,9 @@ export const ShoppingCart = () => {
             })
             if (response.status === 200) {
                 getCart();
-                toast.success('Đã xóa sản phẩm khỏi giỏ hàng');
+                toast.success('Đã xóa sản phẩm khỏi giỏ hàng',toastifyOptions(1000));
             } else {
-                toast.error('Lỗi xóa sản phẩm khỏi giỏ hàng');
+                toast.error('Lỗi xóa sản phẩm khỏi giỏ hàng',toastifyOptions(1000));
             }
         } catch (error) {
             console.log(error)
@@ -76,19 +77,6 @@ export const ShoppingCart = () => {
             </div>
                 :
                 <div className=' flex justify-center items-center text-2xl font-semibold h-96 '>Bạn chưa có sản phẩm nào trong giỏ hàng</div>}
-            <ToastContainer
-                position="top-right"
-                autoClose={1000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-                transition:Bounce
-            />
         </>
     )
 }

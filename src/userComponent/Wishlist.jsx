@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import axiosInstance from '../service/getRefreshToken';
 import trash from '../public/trash.svg'
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
+import { fetchWishList } from '../service/stateManage/authSlice';
+import { toastifyOptions } from '../service/toast';
 const Wishlist = () => {
     const navigate = useNavigate();
     const { user } = useSelector(state => state.auth);
     const [wishList, setWishList] = useState([]);
+    const dispatch = useDispatch();
     const getCart = async () => {
         if (!user?._id) {
             // console.warn("Người dùng chưa đăng nhập hoặc không có ID");
-            setWishList(0); // Đảm bảo UI không bị lỗi
+            setWishList(0); 
             return;
         }
         try {
@@ -29,10 +32,11 @@ const Wishlist = () => {
                 userId:user._id
             })
             if(response.status === 200) {
+                dispatch(fetchWishList(user._id));
                 getCart();
-                toast.success('Đã xóa sản phẩm khỏi danh sách yêu thích');
+                toast.success('Đã xóa sản phẩm khỏi danh sách yêu thích',toastifyOptions(1000));
             }else{
-              toast.error('Lỗi xóa sản phẩm khỏi danh sách yêu thích');
+              toast.error('Lỗi xóa sản phẩm khỏi danh sách yêu thích',toastifyOptions(1000));
             }
           } catch (error) {
             console.log(error)
@@ -48,7 +52,7 @@ const Wishlist = () => {
                     unitPrice:price
                 })
                 if(respone.status === 200){
-                   toast.success('Đã thêm vào giỏ hàng');
+                   toast.success('Đã thêm vào giỏ hàng',toastifyOptions(1000));
                 }           
             } catch (error) {
                 console.log(error)
@@ -108,19 +112,6 @@ const Wishlist = () => {
                 Bạn chưa có sản phẩm trong danh sách yêu thích
             </div>
         )}
-         <ToastContainer
-          position="top-right"
-          autoClose={1000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-          transition:Bounce
-        /> 
     </>
     )
 }

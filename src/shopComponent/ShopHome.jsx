@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { Link, Outlet, useLocation, useNavigate } from 'react-router'
-import { ToastContainer, toast } from 'react-toastify';
+
 const ShopHome = () => {
   const { user, accessToken } = useSelector(state => state.auth); // Lấy user và token từ Redux
   const navigate = useNavigate();
@@ -35,7 +35,7 @@ const ShopHome = () => {
               <Link to='dashboard'>Trang chủ</Link>
               </li>
               <li className="py-2 px-4 hover:bg-gray-700">
-              <Link to='productManage'>Quản lý sản phẩm</Link>
+              <Link to=''>Quản lý sản phẩm</Link>
               </li>
               <li className="py-2 px-4 hover:bg-gray-700">
                 <Link to={`shopProfile/${user?.shopId?._id}`}>Thông tin shop</Link>
@@ -62,19 +62,6 @@ const ShopHome = () => {
           <Outlet />
         </div>
       </div>
-<ToastContainer
-                position="top-right"
-                autoClose={1000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-                transition:Bounce
-            />
     </>
   )
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useLocation } from 'react-router';
+import { Link, useLocation } from 'react-router';
 
 const HeaderForSignup = () => {
   const location = useLocation();
@@ -10,7 +10,7 @@ const HeaderForSignup = () => {
       </div>
       <div className='flex justify-around w-4/5 ml-28 mt-5'>
         <div className='flex w-2/5'>
-          <h1 className='text-3xl text-white cursor-pointer'>Shopee</h1>
+          <Link to=''><h1 className='text-3xl text-white cursor-pointer'>Shopee</h1></Link>
           <h1 className='text-3xl cursor-pointer ml-4'>{location.pathname === '/signup' ? 'Đăng ký' :'Đăng nhập'}</h1>
         </div>
         <span className='mt-2 text-zinc-300 cursor-pointer'>Bạn cần giúp đỡ ?</span>
