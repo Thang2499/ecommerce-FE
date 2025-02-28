@@ -6,7 +6,7 @@ const axiosInstance = axios.create({
     headers:{
        "Content-Type":  "multipart/form-data"
     },
-    withCredentials: 'true'
+    withCredentials: 'include'
 })
 
 axiosInstance.interceptors.response.use(
