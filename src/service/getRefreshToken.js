@@ -1,10 +1,12 @@
 import axios from  'axios';
+url = "https://ecommerce-83cjyllkn-thangs-projects-c4756ebe.vercel.app"
+// 'http://localhost:8080'
 const axiosInstance = axios.create({
-    baseURL:'http://localhost:8080',
+    baseURL: url,
     headers:{
-       "Content-Type": "application/json" || "multipart/form-data"
+       "Content-Type":  "multipart/form-data"
     },
-    withCredentials: 'include'
+    withCredentials: 'true'
 })
 
 axiosInstance.interceptors.response.use(
