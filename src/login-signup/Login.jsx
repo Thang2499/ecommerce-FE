@@ -9,14 +9,11 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const dispatch = useDispatch();
     const  navigate  = useNavigate();
-    const auth = useSelector(state => state.auth); // đây là cách lấy state từ redux, không cần truyền props
-    // console.log('auth',auth);
     const handleLogin = async (e) => {
       e.preventDefault();
       try {
         dispatch(setLoading(true))
-        console.log('email',email);
-        console.log('password',password);
+
         const response = await axiosInstance.post('/user/login', {
           email:email,
           password:password
