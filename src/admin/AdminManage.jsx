@@ -41,7 +41,13 @@ const AdminManage = () => {
     formData.append('address', formAddAdmin.adminAddress);
     if (formAddAdmin.adminRole === 'ADMIN') {
       formData.append('isActive', true)
-      const response = await axiosInstance.post('/admin/create/admin', formData);
+      const response = await axiosInstance.post('/admin/create/admin',
+         formData,
+         {
+          headers: {
+          "Content-Type":"multipart/form-data",
+      }}   
+        );
       console.log(response)
       if (response.status === 201) {
         toast.success('Tạo quản trị viên thành công',toastifyOptions(2000));
@@ -60,7 +66,13 @@ const AdminManage = () => {
         setLoading(false);
       }
     } else if (formAddAdmin.adminRole === 'READ_ONLY') {
-      const response = axiosInstance.post('/admin/create/read-only', formData);
+      const response = axiosInstance.post('/admin/create/read-only', 
+        formData,
+        {
+          headers: {
+          "Content-Type":"multipart/form-data",
+      }}
+      );
       if (response.status === 201) {
         toast.success('Tạo quản trị viên thành công',toastifyOptions(2000));
         setLoading(false);

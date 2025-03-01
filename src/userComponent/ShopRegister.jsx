@@ -27,6 +27,10 @@ const ShopRegister = () => {
         try {
             const response = await axiosInstance.post('/user/request-seller',
                 formData,
+                {
+                    headers: {
+                    "Content-Type":"multipart/form-data",
+                }}
             );
             if (response.status !== 201) {
                 console.error('Error details:', response.message);

@@ -15,6 +15,8 @@ const Login = () => {
       e.preventDefault();
       try {
         dispatch(setLoading(true))
+        console.log('email',email);
+        console.log('password',password);
         const response = await axiosInstance.post('/user/login', {
           email:email,
           password:password
