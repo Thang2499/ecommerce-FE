@@ -16,7 +16,8 @@ const Login = () => {
       try {
         dispatch(setLoading(true))
         const response = await axiosInstance.post('/user/login', {
-          email, password
+          email:email,
+          password:password
         });
         if (response && response.status === 200) {
         } else {
