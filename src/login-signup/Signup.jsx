@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import signUp from '../public/login-signup.png'
+import signUp from '../assets/login-signup.png'
 import axiosInstance from '../service/getRefreshToken';
 const Signup = () => {
     const [email, setEmail] = useState('');

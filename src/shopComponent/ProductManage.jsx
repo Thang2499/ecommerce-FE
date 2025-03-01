@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axiosInstance from '../service/getRefreshToken';
 import Select from 'react-select';
-import settings from '../public/settings.svg'
+import settings from '../assets/settings.svg';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import LoadingSpinner from './LoadingSpinner';

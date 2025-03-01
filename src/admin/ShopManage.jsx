@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axiosInstance from '../service/getRefreshToken';
-import settings from '../public/settings.svg'
+import settings from '../assets/settings.svg'
 const ShopManage = () => {
     const [shopRequest, setShopRequest] = useState(false);
     const [shopActive, setShopActive] = useState(true);

@@ -1,27 +1,27 @@
 import React from 'react'
-import american from '../public/footer/american.png';
-import circle from '../public/footer/circle.png';
-import cod from '../public/footer/cod.png';
-import jcb from '../public/footer/jcb.png';
-import pay from '../public/footer/pay.png';
-import paylater from '../public/footer/paylater.png';
-import tragop from '../public/footer/tragop.png';
-import visa from '../public/footer/visa.png';
+import american from '../assets/footer/american.png';
+import circle from '../assets/footer/circle.png';
+import cod from '../assets/footer/cod.png';
+import jcb from '../assets/footer/jcb.png';
+import pay from '../assets/footer/pay.png';
+import paylater from '../assets/footer/paylater.png';
+import tragop from '../assets/footer/tragop.png';
+import visa from '../assets/footer/visa.png';
 
-import spx from '../public/footer/spx.png';
-import ghn from '../public/footer/ghn.png';
-import viettel from '../public/footer/viettel.png';
-import vietnam from '../public/footer/vietnam.png';
-import jt from '../public/footer/j&t.png';
-import grab from '../public/footer/grab.png';
-import ninjavan from '../public/footer/ninjavan.png';
-import be from '../public/footer/be.png';
-import ahamove from '../public/footer/ahamove.png';
+import spx from '../assets/footer/spx.png';
+import ghn from '../assets/footer/ghn.png';
+import viettel from '../assets/footer/viettel.png';
+import vietnam from '../assets/footer/vietnam.png';
+import jt from '../assets/footer/j&t.png';
+import grab from '../assets/footer/grab.png';
+import ninjavan from '../assets/footer/ninjavan.png';
+import be from '../assets/footer/be.png';
+import ahamove from '../assets/footer/ahamove.png';
 
-import qr from '../public/footer/qr.png';
-import appstore from '../public/footer/AppStore.png';
-import appGallery from '../public/footer/appGallery.png';
-import ggPlay from '../public/footer/ggPlay.png';
+import qr from '../assets/footer/qr.png';
+import appstore from '../assets/footer/AppStore.png';
+import appGallery from '../assets/footer/appGallery.png';
+import ggPlay from '../assets/footer/ggPlay.png';
 const Footer = () => {
     const images = [visa, circle, jcb, american, cod, tragop, pay, paylater];
     const images2 = [spx, ghn, viettel, vietnam, jt, grab, ninjavan, be, ahamove];

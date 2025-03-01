@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import axiosInstance from '../service/getRefreshToken';
-import trash from '../public/trash.svg'
+import trash from '../assets/trash.svg'
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
 import { fetchWishList } from '../service/stateManage/authSlice';

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import axiosInstance from '../service/getRefreshToken';
-import settings from '../public/settings.svg'
+import settings from '../assets/settings.svg'
 const UserManage = () => {
   const [listUser, setListUser] = useState([]);
   const [config,setConfig] = useState(false)

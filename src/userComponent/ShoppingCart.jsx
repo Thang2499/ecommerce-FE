@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axiosInstance from '../service/getRefreshToken';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router';
-import trash from '../public/trash.svg'
+import trash from '../assets/trash.svg'
 import { ToastContainer, toast } from 'react-toastify';
 import { toastifyOptions } from '../service/toast';
 export const ShoppingCart = () => {

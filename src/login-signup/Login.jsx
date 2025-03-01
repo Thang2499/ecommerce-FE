@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import loginn from '../public/login-signup.png'
+import loginn from '../assets/login-signup.png'
 import axiosInstance from '../service/getRefreshToken';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
