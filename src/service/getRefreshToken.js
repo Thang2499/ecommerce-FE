@@ -5,7 +5,6 @@ const axiosInstance = axios.create({
     baseURL: "https://ecommerce-be-0z8u.onrender.com",
     headers:{
        "Content-Type":  "multipart/form-data",
-       "Allow-Control-Allow-Origin": "*"
     },
     withCredentials: 'true'
 })
