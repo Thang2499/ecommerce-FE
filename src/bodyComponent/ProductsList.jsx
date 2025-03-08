@@ -50,7 +50,7 @@ const ProductsList = () => {
       </div>
       <div className="flex justify-center mt-2 items-center">
         {/* Hiển thị pagination */}
-        <div className="flex  space-x-2">
+        <div className="flex space-x-2">
           {/* First Page Button */}
           <button
             onClick={() => handlePageChange(1)}

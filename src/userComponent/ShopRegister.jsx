@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../service/getRefreshToken';
 import { toast } from 'react-toastify';
 import { toastifyOptions } from '../service/toast';
+import { fetchUserInfo } from '../service/stateManage/authSlice';
 const ShopRegister = () => {
     const authStore = useSelector(state => state.auth);
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         shopName: '',
@@ -26,7 +28,7 @@ const ShopRegister = () => {
         e.preventDefault();
         try {
             const response = await axiosInstance.post('/user/request-seller',
-                formData,
+                {formData: formData},
                 {
                     headers: {
                     "Content-Type":"multipart/form-data",
@@ -39,6 +41,7 @@ const ShopRegister = () => {
             toast.success(response.data.message,toastifyOptions(2000));
             setTimeout(() => {
                 navigate('/');
+                dispatch(fetchUserInfo(authStore.user._id));
             }, 3000);
             console.log('Thành công:', response.data);
         } catch (err) {

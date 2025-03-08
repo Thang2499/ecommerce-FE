@@ -42,43 +42,54 @@ const Category = ({ onPriceFilter }) => {
   };
 
   return (
-    <div className="p-4 bg-slate-300 w-60">
-      {/* Dropdown chọn khoảng giá */}
-      <div className="mb-4">
-        <label className="text-gray-700 font-semibold">Lọc theo giá:</label>
-        <select
-          value={selectedPrice}
-          onChange={handlePriceChange}
-          className="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-300"
-        >
-          {priceRanges.map((range) => (
-            <option key={range.value} value={range.value}>
-              {range.label}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Danh sách danh mục */}
-      <ul>
-        {categories.map((parentCategory) => (
-          <li key={parentCategory._id} className="relative group border-b border-slate-400 p-2 hover:bg-slate-400">
-            <span className="text-lg font-semibold">{parentCategory.name}</span>
-
-            {/* Danh mục con */}
-            {parentCategory.children.length > 0 && (
-              <ul className="absolute left-full top-0 hidden group-hover:block bg-slate-200 shadow-lg rounded w-48">
-                {parentCategory.children.map((childCategory) => (
-                  <li key={childCategory._id} className="border-b border-slate-400 p-2 hover:text-orange-400">
-                    <Link to={`/${childCategory._id}`}>{childCategory.name}</Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </li>
+    <div className="p-4 bg-gray-100 w-60 rounded-lg shadow-md border border-gray-300">
+    {/* Dropdown chọn khoảng giá */}
+    <div className="mb-4">
+      <label className="text-gray-700 font-semibold">Lọc theo giá:</label>
+      <select
+        value={selectedPrice}
+        onChange={handlePriceChange}
+        className="w-full p-2 border border-gray-300 rounded-lg focus:ring focus:ring-gray-400 bg-white"
+      >
+        {priceRanges.map((range) => (
+          <option key={range.value} value={range.value}>
+            {range.label}
+          </option>
         ))}
-      </ul>
+      </select>
     </div>
+  
+    {/* Danh sách danh mục */}
+    <ul>
+      {categories.map((parentCategory) => (
+        <li
+          key={parentCategory._id}
+          className="relative group border-b border-gray-300 p-2 hover:bg-gray-200"
+        >
+          <span className="text-lg font-semibold text-gray-800">
+            {parentCategory.name}
+          </span>
+  
+          {/* Danh mục con */}
+          {parentCategory.children.length > 0 && (
+            <ul className="absolute left-full top-0 hidden group-hover:block bg-gray-100 shadow-lg rounded w-48 border border-gray-300">
+              {parentCategory.children.map((childCategory) => (
+                <li
+                  key={childCategory._id}
+                  className="border-b border-gray-300 p-2 hover:text-orange-500 hover:bg-gray-200"
+                >
+                  <Link to={`/${childCategory._id}`}>
+                    {childCategory.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </li>
+      ))}
+    </ul>
+  </div>
+  
   );
 };
 

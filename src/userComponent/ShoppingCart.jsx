@@ -27,10 +27,10 @@ export const ShoppingCart = () => {
             })
             if (response.status === 200) {
                 getCart();
-                 dispatch(fetchCart(user._id));
-                toast.success('Đã xóa sản phẩm khỏi giỏ hàng',toastifyOptions(1000));
+                dispatch(fetchCart(user._id));
+                toast.success('Đã xóa sản phẩm khỏi giỏ hàng', toastifyOptions(1000));
             } else {
-                toast.error('Lỗi xóa sản phẩm khỏi giỏ hàng',toastifyOptions(1000));
+                toast.error('Lỗi xóa sản phẩm khỏi giỏ hàng', toastifyOptions(1000));
             }
         } catch (error) {
             console.log(error)
@@ -75,7 +75,13 @@ export const ShoppingCart = () => {
                     </div>
                 </div>
             ))}
-            <Link to='/order'><button>Tiến hành thanh toán</button></Link>
+                <Link to="/order">
+                    <button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold text-lg px-6 py-3 rounded-lg transition-all active:scale-95 shadow-lg">
+                        Tiến hành thanh toán
+                    </button>
+                </Link>
+
+
             </div>
                 :
                 <div className=' flex justify-center items-center text-2xl font-semibold h-96 '>Bạn chưa có sản phẩm nào trong giỏ hàng</div>}

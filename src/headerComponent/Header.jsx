@@ -21,7 +21,6 @@ const Header = () => {
   const navigate = useNavigate();
   const toggleMenu = () => setMenuOpen((prev) => !prev);
   const { user, wishList, userCart } = useSelector((state) => state.auth);
-console.log(userCart)
   useEffect(() => {
     if (user?._id) {
       dispatch(fetchWishList(user._id));
@@ -125,7 +124,7 @@ console.log(userCart)
                             className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                             onClick={() => setMenuOpen(false)}
                           >
-                            View Order
+                            Xem đơn hàng
                           </Link>
                         </li>
                         <li>
@@ -133,7 +132,7 @@ console.log(userCart)
                             onClick={handleLogout}
                             className="block w-full text-left px-4 py-2 text-red-500 hover:bg-gray-100"
                           >
-                            Log out
+                            Đăng xuất
                           </button>
                         </li>
                       </ul>
@@ -142,7 +141,7 @@ console.log(userCart)
                   {authStore.user?.shopId ? (
                     authStore.user.shopId.isActive ? (
                       <Link to="/shopPage" className="hover:text-gray-300">
-                        Go to Shop
+                         Quản lý shop
                       </Link>
                     ) : (
                       <p className="cursor-not-allowed">Shop đang chờ duyệt</p>

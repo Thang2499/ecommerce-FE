@@ -42,39 +42,16 @@ const AdminManage = () => {
     if (formAddAdmin.adminRole === 'ADMIN') {
       formData.append('isActive', true)
       const response = await axiosInstance.post('/admin/create/admin',
-         formData,
-         {
-          headers: {
-          "Content-Type":"multipart/form-data",
-      }}   
-        );
-      console.log(response)
-      if (response.status === 201) {
-        toast.success('Tạo quản trị viên thành công',toastifyOptions(2000));
-        setLoading(false);
-        setAddAdmin(!addAdmin)
-        setFormAddAdmin({
-          name: '',
-          email: '',
-          password: '',
-          role: '',
-          phone: '',
-          address: ''
-        })
-      } else {
-        toast.error('Tạo quản trị viên thất bại',toastifyOptions(2000));
-        setLoading(false);
-      }
-    } else if (formAddAdmin.adminRole === 'READ_ONLY') {
-      const response = axiosInstance.post('/admin/create/read-only', 
         formData,
         {
           headers: {
-          "Content-Type":"multipart/form-data",
-      }}
+            "Content-Type": "multipart/form-data",
+          }
+        }
       );
+      console.log(response)
       if (response.status === 201) {
-        toast.success('Tạo quản trị viên thành công',toastifyOptions(2000));
+        toast.success('Tạo quản trị viên thành công', toastifyOptions(2000));
         setLoading(false);
         setAddAdmin(!addAdmin)
         setFormAddAdmin({
@@ -86,18 +63,42 @@ const AdminManage = () => {
           address: ''
         })
       } else {
-        toast.error('Tạo quản trị viên thất bại',toastifyOptions(2000));
+        toast.error('Tạo quản trị viên thất bại', toastifyOptions(2000));
+        setLoading(false);
+      }
+    } else if (formAddAdmin.adminRole === 'READ_ONLY') {
+      const response = axiosInstance.post('/admin/create/read-only',
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          }
+        }
+      );
+      if (response.status === 201) {
+        toast.success('Tạo quản trị viên thành công', toastifyOptions(2000));
+        setLoading(false);
+        setAddAdmin(!addAdmin)
+        setFormAddAdmin({
+          name: '',
+          email: '',
+          password: '',
+          role: '',
+          phone: '',
+          address: ''
+        })
+      } else {
+        toast.error('Tạo quản trị viên thất bại', toastifyOptions(2000));
         setLoading(false);
       }
     } else {
       setLoading(false);
-      return toast.info('Chưa có chức năng tạo super admin',toastifyOptions(2000));
+      return toast.info('Chưa có chức năng tạo super admin', toastifyOptions(2000));
     }
   };
   const getAdminList = async () => {
     try {
       const response = await axiosInstance.get('/admin/listAdmin', { params: query });
-      console.log(response)
       if (response.status === 200) {
         const { adminList, totalPages, totalAdmin } = response.data;
         setListAdmin(adminList)
@@ -107,15 +108,15 @@ const AdminManage = () => {
           totalAdmin
         });
       } else {
-        toast.error('Load dữ liệu thất bại',toastifyOptions(2000));
+        toast.error('Load dữ liệu thất bại', toastifyOptions(2000));
       }
     } catch (error) {
-      toast.error('Load dữ liệu thất bại',toastifyOptions(2000));
+      toast.error('Load dữ liệu thất bại', toastifyOptions(2000));
     }
   };
   const openSetting = (admin) => {
     if (auth.user.role === 'READ_ONLY') {
-      return toast.error('Bạn không có quyền truy cập',toastifyOptions(2000));
+      return toast.error('Bạn không có quyền truy cập', toastifyOptions(2000));
     }
     setCurrentAdmin(admin);
     setConfig(!config);
@@ -168,9 +169,15 @@ const AdminManage = () => {
           <h1 className="text-2xl font-bold">Quản lý quản trị viên</h1>
         </div>
       </nav>
-      <div className='mt-4 overflow-x-auto rounded-lg relative'>
-        <button onClick={() => setAddAdmin(!addAdmin)}>Thêm Admin</button>
+      <div className="mt-4 overflow-x-auto rounded-lg relative">
+        <button
+          onClick={() => setAddAdmin(!addAdmin)}
+          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-lg transition-all active:scale-95"
+        >
+          Thêm Admin
+        </button>
       </div>
+
       <div className="overflow-x-auto bg-white shadow-md rounded-lg w-full mt-5 relative">
 
         <div className="flex px-4 py-3 border-b bg-gray-100">

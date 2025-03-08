@@ -55,10 +55,10 @@ const handleProductDetail = (idProduct) =>{
   navigate(`/productDetail/${idProduct}`)
 }
   return (
-    <div className="relative w-11/12 group border border-gray-200 rounded-lg shadow-md  hover:shadow-2xl p-4 bg-white flex flex-col justify-between">
+    <div className="relative w-11/12 group border border-gray-200 rounded-lg shadow-md hover:shadow-2xl p-4 bg-white flex flex-col justify-between">
     {image ? (
       <img
-        className="w-full  object-cover rounded-t-lg transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-110"
+        className="w-full object-cover rounded-t-lg transition ease-in-out delay-50 hover:-translate-y-1 hover:scale-110"
         src={image}
         alt=""
       />

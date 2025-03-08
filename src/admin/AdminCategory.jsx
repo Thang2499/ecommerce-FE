@@ -41,6 +41,7 @@ const AdminCategory = () => {
       if (response.status === 200) {
         toast.success('Thêm danh mục thành công',toastifyOptions(2000));
         setNewCategory("");
+        getCategories();
       } else {
         toast.error('Thêm danh mục thất bại',toastifyOptions(2000));
       }
@@ -75,9 +76,10 @@ const AdminCategory = () => {
     try {
       const response = await axiosInstance.delete(`/admin/category/delete/${categoryId}`);
       if (response.status === 200) {
-        toast.success('Xóa danh mục con thành công',toastifyOptions(2000));
+        getCategories();
+        toast.success('Xóa danh mục thành công',toastifyOptions(1000));
       } else {
-        toast.error('Xóa danh mục con thất bại',toastifyOptions(2000));
+        toast.error('Xóa danh mục thất bại',toastifyOptions(1000));
       }
     } catch (error) {
       console.log(error);
@@ -137,30 +139,6 @@ const AdminCategory = () => {
 
         </div>
 
-        {/* Form chỉnh sửa danh mục */}
-        {/* {editCategory && (
-          <div className="mb-4">
-            <input
-              type="text"
-              value={editName}
-              onChange={(e) => setEditName(e.target.value)}
-              placeholder="Nhập tên mới..."
-              className="border p-2 mr-2"
-            />
-            <button
-              // onClick={handleEditCategory}
-              className="bg-yellow-500 text-white px-4 py-2 rounded">
-              Cập nhật
-            </button>
-            <button
-              // onClick={() => setEditCategory(null)}
-              className="bg-red-500 text-white px-4 py-2 rounded ml-2"
-            >
-              Hủy
-            </button>
-          </div>
-        )} */}
-
         {/* Danh sách danh mục */}
         <ul className="list-disc pl-8">
           {categories?.map((category) => (
@@ -175,6 +153,7 @@ const AdminCategory = () => {
                     Sửa
                   </button>
                   <button
+                  onClick={() => handleDeleteChildCategory(category._id)}
                     className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded"
                   >
                     Xóa
@@ -266,21 +245,11 @@ const AdminCategory = () => {
               <div className="mb-4">
                 <label className="block font-medium text-gray-700">Hình ảnh</label>
                 <img
-                  // className="w-full mt-1 p-2 border border-gray-300 rounded-md"
+                  className="w-full mt-1 p-2 border border-gray-300 rounded-md"
                   src={currentCate.image ? currentCate.image : "no image"}
 
                 />
               </div>
-              {/* <div className="mb-4">
-                <label className="block font-medium text-gray-700">Email</label>
-                <input
-                  type="email"
-                  className="w-full mt-1 p-2 border border-gray-300 rounded-md"
-                  value={currentUser.email}
-                  readOnly
-                />
-              </div> */}
-
               <div className="flex gap-4">
                 <button className="bg-blue-500 text-white py-2 px-4 rounded-md">Sửa</button>
                 <button className="bg-red-500 text-white py-2 px-4 rounded-md">Xóa</button>

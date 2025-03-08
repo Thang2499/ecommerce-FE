@@ -4,6 +4,8 @@ import axiosInstance from '../service/getRefreshToken';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { login, setLoading } from '../service/stateManage/authSlice';
+import { toast } from 'react-toastify';
+import { toastifyOptions } from '../service/toast';
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -13,15 +15,13 @@ const Login = () => {
       e.preventDefault();
       try {
         dispatch(setLoading(true))
-
         const response = await axiosInstance.post('/user/login', {
           email:email,
           password:password
         });
         if (response && response.status === 200) {
-        } else {
-          throw new Error('Unexpected response');
-        }
+          toast.success('Đăng nhập thành công', toastifyOptions(1000));
+        } 
         dispatch(login({
           user: response.data.user,
           accessToken: response.data.accessToken,
@@ -30,7 +30,10 @@ const Login = () => {
         localStorage.setItem('user', JSON.stringify(response.data.user));
           navigate('/');
       } catch (err) {
-        console.log(err);
+         if (err.status === 404) {
+          toast.error('Sai thông tin đăng nhập vui lòng thử lại', toastifyOptions(1000));
+          return;
+        }
       } finally {
         dispatch(setLoading(false))
       }

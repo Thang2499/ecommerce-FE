@@ -27,7 +27,7 @@ const BodyByCategory = () => {
     }, [CategoryId])
   return (
     <div className='mt-12'>
-        {productList ? (<div className='grid grid-cols-6 gap-1 ml-5 '>{productList.map(item => (<ProductListChild key={item._id} items={item} />))}</div>) : <p>Loading</p>}
+        {productList ? (<div className='grid grid-cols-6 gap-1 '>{productList.map(item => (<ProductListChild key={item._id} items={item} />))}</div>) : <p>Loading</p>}
       </div>
   )
 }
