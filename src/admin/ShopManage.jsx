@@ -34,7 +34,11 @@ const ShopManage = () => {
     const handleAction = async (action, id) => {
         console.log(id)
         if (action === 'accept') {
-            await axiosInstance.post(`/admin/shop/approve/${id}`)
+          const response = await axiosInstance.post(`/admin/shop/approve/${id}`);
+          if(response.status === 201){
+            getShopActive();
+            getShopRequest();
+          }
         }
     }
 
@@ -43,7 +47,6 @@ const ShopManage = () => {
         setConfig(!config);
     };
 
-    // Đóng popup
     const closePopup = () => {
         setConfig(false);
         setCurrentUser(null);
@@ -62,7 +65,7 @@ const ShopManage = () => {
                     <button
                         onClick={() => {
                             setShopRequest(false);
-                            setShopActive(true); // Reset the other state when one is clicked
+                            setShopActive(true); 
                         }}
                         className="text-lg cursor-pointer bg-slate-400 hover:bg-slate-500 px-4 py-2 rounded w-full"
                     >
@@ -71,7 +74,7 @@ const ShopManage = () => {
                     <button
                         onClick={() => {
                             setShopRequest(true);
-                            setShopActive(false); // Reset the other state when one is clicked
+                            setShopActive(false); 
                         }}
                         className="text-lg cursor-pointer bg-slate-400 hover:bg-slate-500 px-4 py-2 rounded w-full"
                     >
@@ -206,7 +209,6 @@ const ShopManage = () => {
                     </div>
                 )}
             </div>
-
         </>
     );
 };

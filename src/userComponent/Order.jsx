@@ -1,7 +1,7 @@
 import React from 'react'
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axiosInstance from '../service/getRefreshToken';
 import { toastifyOptions } from '../service/toast';
@@ -12,8 +12,8 @@ const Order = () => {
  
   const [formData, setFormData] = useState({
     firstName: authStore.user ? authStore.user.name : '',
-    streetAddress: '',
-    phoneNumber: '',
+    streetAddress:authStore.user ? authStore.user.address : '',
+    phoneNumber:authStore.user ? authStore.user.phone : '',
     email: authStore.user ? authStore.user.email : ''
   });
   const [errors, setErrors] = useState({});

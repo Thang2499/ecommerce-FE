@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import axiosInstance from '../service/getRefreshToken';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
-import { fetchWishList } from '../service/stateManage/authSlice';
+import { fetchCart, fetchWishList } from '../service/stateManage/authSlice';
 import { toastifyOptions } from '../service/toast';
 const ProductListChild = ({ items }) => {
   const { productName, image, price, _id } = items;
@@ -42,7 +42,8 @@ const ProductListChild = ({ items }) => {
             unitPrice:price
         })
         if(respone.status === 200){
-           toast.success('Đã thêm vào giỏ hàng');
+          dispatch(fetchCart(auth.user._id));
+           toast.success('Đã thêm vào giỏ hàng',toastifyOptions(1000));
         }           
     } catch (error) {
       toast.info('Vui lòng đăng nhập để mua hàng')

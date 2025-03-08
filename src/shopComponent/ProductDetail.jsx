@@ -1,33 +1,36 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { HfInference } from "@huggingface/inference";
 import axiosInstance from '../service/getRefreshToken';
 import { toastifyOptions } from '../service/toast';
+import { fetchCart } from '../service/stateManage/authSlice';
 const ProductDetail = () => {
   const [data, setData] = useState({});
   const [quantity, setQuantity] = useState(1)
   const [selectedImage, setSelectedImage] = useState(data?.image?.[0] || "");
   const authStore = useSelector(state => state.auth);
   const { id } = useParams();
+  const dispatch = useDispatch();
   const getProductDetail = async () => {
     try {
       const response = await axiosInstance.post('/system/productDetail', { id: id })
       if (response.status !== 200) throw new Error('Error')
-        setData(response.data)
+      setData(response.data)
       setSelectedImage(response.data.image[0])
     } catch (error) {
       console.log(error)
     }
   }
   useEffect(() => {
-    getProductDetail()
+    getProductDetail();
+    window.scrollTo(0, 0);
   }, [id])
   const addToCart = async (id, price, quantity) => {
     if (authStore.isAuth === false) {
-      toast.info('Đang nhập để mua hàng',toastifyOptions(2000))
+      toast.info('Đang nhập để mua hàng', toastifyOptions(2000))
       return;
     }
     try {
@@ -38,10 +41,13 @@ const ProductDetail = () => {
         unitPrice: price,
       })
       if (res.status !== 200) {
-        toast.error('Lỗi thêm vào giỏ hàng',toastifyOptions(2000));
-        throw new Error('đăng nhập thất bại',toastifyOptions(2000));
+        toast.error('Lỗi thêm vào giỏ hàng', toastifyOptions(2000));
+        throw new Error('đăng nhập thất bại', toastifyOptions(2000));
       }
-      toast.success('Thêm vào giỏ hàng thành công',toastifyOptions(2000))
+      if(res.status === 200){
+         dispatch(fetchCart(authStore.user._id));
+      }
+      toast.success('Thêm vào giỏ hàng thành công', toastifyOptions(2000))
     } catch (err) {
       console.log(err);
     }
@@ -73,12 +79,11 @@ const ProductDetail = () => {
     e.preventDefault();
     setMessage("");
     if (inputText.trim() === "") {
-      toast.info("Vui lòng nhập đánh giá!",toastifyOptions(2000));
+      toast.info("Vui lòng nhập đánh giá!", toastifyOptions(2000));
       return;
     }
 
     const result = await analyzeSentiment(inputText);
-    console.log(result)
     if (result) {
       const positiveOrNeutral = result.some(
         (item) =>
@@ -89,54 +94,56 @@ const ProductDetail = () => {
       if (positiveOrNeutral) {
         setComments((prevComments) => [
           ...prevComments,
-          { id: Date.now(), text: inputText,timestamp: Date.now() },
+          { id: Date.now(), text: inputText, timestamp: Date.now() },
         ]);
-        toast.success("Đánh giá của bạn đã được đăng thành công!",toastifyOptions(2000));
+        toast.success("Đánh giá của bạn đã được đăng thành công!", toastifyOptions(2000));
         setInputText("");
       } else {
         toast.warning("Đánh giá của bạn không được chấp nhận do ngôn từ làm ảnh hưởng đến trải nghiệm người dùng!");
       }
     } else {
-      toast.error("Có lỗi xảy ra, vui lòng thử lại!",toastifyOptions(2000));
+      toast.error("Có lỗi xảy ra, vui lòng thử lại!", toastifyOptions(2000));
     }
   };
 
   const formatPrice = (price) => {
     if (!price) return '';
     return price.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-};
+  };
   return (
     <>
       {data ? (
         <div className="bg-gra100 h-vh flex flex-wrap p-8">
           {/* Vùng ảnh */}
           <div className="w-1/2">
-          <div className="ml-6 md:ml-24">
-          {/* Ảnh chính */}
-          {selectedImage && (
-            <img
-              className="bg-custom-gray w-full h-96 p-2 mx-auto object-cover"
-              src={selectedImage}
-            />
-          )}
-        </div>
-        <div className="ml-8 md:ml-36 flex flex-wrap justify-start mt-4 gap-2">
-          {data.imageDetail ? (
-            data.imageDetail.map((imgDetail, idx) => (
-              <img
-                key={idx}
-                className="w-20 md:w-1/5 cursor-pointer border border-gray-300 rounded-lg"
-                src={imgDetail}
-                onClick={() => setSelectedImage(imgDetail)} // Cập nhật ảnh chính khi click
-              />
-            ))
-          ) : (
-            <p>Image loading...</p>
-          )}
-        </div>
+            <div className="ml-6 md:ml-24 overflow-hidden flex justify-center items-center w-[550px] h-[310px]">
+              {/* Ảnh chính */}
+              {selectedImage && (
+                <img
+                  className="bg-custom-gray max-w-[450px] max-h-[300px] object-contain"
+                  src={selectedImage}
+                  alt="Selected"
+                />
+              )}
+            </div>
+
+            <div className="ml-8 md:ml-36 flex flex-wrap justify-start mt-4 gap-2">
+              {data.imageDetail ? (
+                data.imageDetail.map((imgDetail, idx) => (
+                  <img
+                    key={idx}
+                    className="w-20 md:w-1/5 cursor-pointer border border-gray-300 rounded-lg"
+                    src={imgDetail}
+                    onClick={() => setSelectedImage(imgDetail)} // Cập nhật ảnh chính khi click
+                  />
+                ))
+              ) : (
+                <p>Image loading...</p>
+              )}
+            </div>
           </div>
           {/* Vùng thông tin sản phẩm */}
-          <div className="w-full md:w-1/2 mt-6 md:mt-0">
+          <div className="w-full md:w-1/2 mt-6 md:mt-0  p-8">
             <p className="text-xl font-bold">{data.productName}</p>
             <p className="text-lg text-green-600">{formatPrice(data?.price?.toString())}đ</p>
             <div className="flex items-center mt-6">
@@ -161,8 +168,8 @@ const ProductDetail = () => {
               onClick={() => addToCart(data._id, data.price, quantity)}
             >Add to cart</button>
           </div>
-          <div className="text-gray-600 mt-4 w-3/4 ml-36" dangerouslySetInnerHTML={{ __html: data.description }}></div>
-          <div className='ml-24 pl-2 w-3/4 p-6 '>
+          <div className="text-gray-600 mt-4 w-3/5 ml-36 bg-white shadow-xl rounded-lg p-10" dangerouslySetInnerHTML={{ __html: data.description }}></div>
+          <div className='ml-36 pl-2 w-3/4 p-6 '>
             <h1 className='text-xl font-bold mb-4'>Comments</h1>
             {loading && <p className='text-gray-500 italic'>Posting comments...</p>}
             <form className='flex' onSubmit={handleSubmit}>
@@ -186,15 +193,15 @@ const ProductDetail = () => {
                   <li key={comment.id} className='flex items-start gap-2 p-3 bg-gray-100 rounded-md'>
                     <span>{authStore.user.name}:</span>  {comment.text}
                     <small className='text-gray-600 pt-1'>
-              {new Date(comment.timestamp).toLocaleString("vi-VN", {
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-              })}
-            </small>
+                      {new Date(comment.timestamp).toLocaleString("vi-VN", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                        second: "2-digit",
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                      })}
+                    </small>
                   </li>
                 ))}
               </ul>

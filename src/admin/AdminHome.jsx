@@ -26,7 +26,7 @@ const AdminHome = () => {
           <nav className="mt-4">
             <ul>
               <li className="py-2 px-4 hover:bg-gray-700">
-              <Link to='dashboard'>Trang chủ</Link>
+              <Link to=''>Trang chủ</Link>
               </li>
               <li className="py-2 px-4 hover:bg-gray-700">
               <Link to='userManage'>Quản lý user</Link>

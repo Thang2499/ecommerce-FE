@@ -6,7 +6,7 @@ import wishlist from '../assets/headerImg/wishlist.svg'
 import search from '../assets/headerImg/search.svg'
 import { Link, useNavigate } from 'react-router'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchWishList, logout } from '../service/stateManage/authSlice'
+import { fetchCart, fetchWishList, logout } from '../service/stateManage/authSlice'
 import axiosInstance from '../service/getRefreshToken'
 const Header = () => {
   const authStore = useSelector(state => state.auth);
@@ -20,11 +20,12 @@ const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const toggleMenu = () => setMenuOpen((prev) => !prev);
-  const { user, wishList } = useSelector((state) => state.auth);
-
+  const { user, wishList, userCart } = useSelector((state) => state.auth);
+console.log(userCart)
   useEffect(() => {
     if (user?._id) {
       dispatch(fetchWishList(user._id));
+      dispatch(fetchCart(user._id));
     }
   }, [dispatch, user]);
 
@@ -209,6 +210,7 @@ const Header = () => {
           <div className='flex justify-around w-1/12 relative'>
             <span className='left-7 bg-white rounded-full px-1.5 text-sm cursor-pointer absolute z-10'>{wishList?.length}</span>
             <Link to='/wishlist'><img src={wishlist} className="w-8 cursor-pointer hover:scale-110 pt-1" alt="" /></Link>
+            <span className='left-20 bg-white rounded-full px-1.5 text-sm cursor-pointer absolute z-10'>{userCart.itemsInCart?.length}</span>
             <Link to='/cart'><img src={cart} className="w-8 cursor-pointer hover:scale-110 pt-1" alt="" /></Link>
           </div>
         </div>

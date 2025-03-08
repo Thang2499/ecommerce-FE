@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import axiosInstance from '../service/getRefreshToken';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router';
 import trash from '../assets/trash.svg'
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { toastifyOptions } from '../service/toast';
+import { fetchCart } from '../service/stateManage/authSlice';
 export const ShoppingCart = () => {
     const { user } = useSelector(state => state.auth);
     const [cart, setCart] = useState([]);
+    const dispatch = useDispatch();
     const getCart = async () => {
         try {
             const response = await axiosInstance.post('/system/cart', { id: user._id });
@@ -18,7 +20,6 @@ export const ShoppingCart = () => {
     }
 
     const removeFromCart = async (id) => {
-        console.log(id)
         try {
             const response = await axiosInstance.post('/system/removeFromCart', {
                 itemId: id,
@@ -26,6 +27,7 @@ export const ShoppingCart = () => {
             })
             if (response.status === 200) {
                 getCart();
+                 dispatch(fetchCart(user._id));
                 toast.success('Đã xóa sản phẩm khỏi giỏ hàng',toastifyOptions(1000));
             } else {
                 toast.error('Lỗi xóa sản phẩm khỏi giỏ hàng',toastifyOptions(1000));

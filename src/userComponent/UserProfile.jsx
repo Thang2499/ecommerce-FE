@@ -1,12 +1,14 @@
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import axiosInstance from '../service/getRefreshToken';
 import { toast } from 'react-toastify';
 import { toastifyOptions } from '../service/toast';
+import { fetchUserInfo } from '../service/stateManage/authSlice';
 
 
 const UserProfile = () => {
   const authStore = useSelector(state => state.auth);
+  const dispatch = useDispatch();
   const [form,setForm] = useState({
     name:authStore.user?.name?authStore.user.name:'',
     email:authStore.user?.email?authStore.user.email:'',
@@ -28,6 +30,7 @@ const UserProfile = () => {
       );
         if(response.status === 200){
           toast.success('Cập nhật thành công', toastifyOptions(1000));
+          dispatch(fetchUserInfo(authStore.user._id));
         }
         const data = await response.data;
         setForm(data);

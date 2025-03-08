@@ -15,6 +15,7 @@ const ProductManage = () => {
     const [category, setCategory] = useState([]);
     const [loading, setLoading] = useState(false);
     const [addProduct, setAddProduct] = useState(false);
+    const [editorData, setEditorData] = useState("");
     const [currentProduct, setCurrentProduct] = useState({
         productName: '',
         price: '',
@@ -95,19 +96,27 @@ const ProductManage = () => {
     }, [query])
 
     const openSetting = (product) => {
-        setCurrentProduct(product);
+        // setCurrentProduct(product);
+        setCurrentProduct({
+            productName: product.productName,
+            price: product.price,
+            description: product.description,
+            category: product.category,
+            image: product.image,
+
+        });
         setConfig(!config);
     };
     const closePopup = () => {
         setAddProduct(false);
         setConfig(false);
-        setCurrentProduct({
-            productName: '',
-            price: '',
-            description: '',
-            category: '',
-            image: '',
-        });
+        // setCurrentProduct({
+        //     productName: '',
+        //     price: '',
+        //     description: '',
+        //     category: '',
+        //     image: '',
+        // });
     };
 
     const handleChange = (e) => {
@@ -161,7 +170,7 @@ const ProductManage = () => {
     }
     const handleSubmit = async (e) => {
         e.preventDefault();
-        // setLoading(true);
+        setLoading(true);
         const formData = new FormData();
         formData.append('name', formAddProduct.name);
         formData.append('price', formAddProduct.price);
@@ -169,7 +178,7 @@ const ProductManage = () => {
         formData.append('category', formAddProduct.category);
         formData.append('image', formAddProduct.image);
         formData.append('shopId', formAddProduct.shopId);
-        console.log('a',formAddProduct.description);
+        console.log('a', formAddProduct.description);
         if (formAddProduct.imageDetail && formAddProduct.imageDetail.length > 0) {
             formAddProduct.imageDetail.forEach((file) => {
                 formData.append('imageDetail', file);
@@ -181,7 +190,7 @@ const ProductManage = () => {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-            // setLoading(false);
+            setLoading(false);
             if (response.status === 201) {
                 toast.success('Thêm sản phẩm thành công', toastifyOptions(3000));
                 getProducts();
@@ -261,6 +270,7 @@ const ProductManage = () => {
     const handlePageChange = (page) => {
         setQuery({ ...query, page });
     };
+
     return (
         <>
             {loading && <LoadingSpinner />}
@@ -270,7 +280,13 @@ const ProductManage = () => {
                 </div>
             </nav>
             <div className='mt-4 overflow-x-auto rounded-lg relative'>
-                <button onClick={() => setAddProduct(!addProduct)}>Thêm sản phẩm mới</button>
+                <button
+                    onClick={() => setAddProduct(!addProduct)}
+                    className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition"
+                >
+                    Thêm sản phẩm mới
+                </button>
+
             </div>
             <div className="overflow-x-auto bg-white shadow-lg rounded-lg w-full mt-6 relative">
                 <div className="flex justify-between px-6 py-4 border-b bg-gray-200">
@@ -411,14 +427,25 @@ const ProductManage = () => {
                         </div>
                         <div className="mb-4">
                             <label className="block font-medium text-gray-700">Mô tả</label>
-                            <textarea
-                                type="text"
-                                name='description'
-                                onChange={(e) => handeChangeUpdate(e)}
-                                className="w-full mt-1 p-2 border border-gray-300 rounded-md"
-                                value={currentProduct.description}
+                            <div
+                                contentEditable={true}
+                                dangerouslySetInnerHTML={{ __html: currentProduct.description }}
+                                className="w-full h-56 mt-1 overflow-auto p-2 border border-gray-300 rounded-md"
+                                onInput={(e) => handeChangeUpdate({ target: { name: "description", value: e.target.innerHTML } })}
+                            >
+                            </div>
 
-                            />
+                            {/* <CKEditor
+                                name="description"
+                                data={currentProduct.description || ""}
+                                onChange={(event) => {
+                                    const data = event.editor.getData();
+                                    handeChangeUpdate({ target: { name: "description", value: data } });
+                                }}
+                                config={{
+                                    extraPlugins: "image",
+                                }}
+                            /> */}
                         </div>
                         <div className="mb-4">
                             <label className="block font-medium text-gray-700">Hình ảnh chính</label>
@@ -484,14 +511,14 @@ const ProductManage = () => {
                                 onChange={(e) => handleChange(e)}
                             /> */}
                             <CKEditor
-    name="description"
-    data={formAddProduct.description} // Truyền giá trị hiện tại vào CKEditor
-    onChange={handleEditorChange} // Gọi hàm handleEditorChange khi có thay đổi
-    config={{
-        // filebrowserUploadUrl: "/upload-image",
-        extraPlugins: "image",
-    }}
-/>
+                                name="description"
+                                data={formAddProduct.description}
+                                onChange={handleEditorChange}
+                                config={{
+                                    // filebrowserUploadUrl: "/upload-image",
+                                    extraPlugins: "image",
+                                }}
+                            />
                         </div>
                         <div className="mb-4">
                             <label className="block font-medium text-gray-700">Thể loại</label>

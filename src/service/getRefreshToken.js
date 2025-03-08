@@ -2,7 +2,7 @@ import axios from  'axios';
 
 // 'http://localhost:8080'
 const axiosInstance = axios.create({
-    baseURL: "https://ecommerce-be-0z8u.onrender.com",
+    baseURL:  "https://ecommerce-be-0z8u.onrender.com",
     headers:{
        "Content-Type":  "application/json",
     },

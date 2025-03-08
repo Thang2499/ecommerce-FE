@@ -1,11 +1,15 @@
 import React, { useState } from 'react'
 import signUp from '../assets/login-signup.png'
 import axiosInstance from '../service/getRefreshToken';
+import { useNavigate } from 'react-router';
+import { toast } from 'react-toastify';
+import { toastifyOptions } from '../service/toast';
 const Signup = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
     const [confirmPass, setconfirmPass] = useState('');
+    const navigate = useNavigate();
     const handleSignUp = async (e) => {
         e.preventDefault();
         if(password !== confirmPass){
@@ -15,7 +19,13 @@ const Signup = () => {
           const response = await axiosInstance.post('/user/register', {
             name, password, email
           })
-          console.log(response);
+          console.log(response.data)
+         if(response.status === 201){
+          setTimeout(() => {
+            toast.success('Đăng ký thành công', toastifyOptions(1000));
+         }, 2000);
+           navigate('/login');
+         }
     }
   return (
     <>
